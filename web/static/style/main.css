@@ -1,0 +1,31 @@
+html {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom, #ccca, #fff);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+body {
+    --margin: 16px;
+    max-width: 800px;
+    width: calc(100vw - (var(--margin) * 2));
+    margin: 0;
+    margin-top: var(--margin);
+    height: fit-content;
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px #0008;
+    background: white;
+    position: relative;
+}
+main {
+    --main-padding: 10px;
+    padding: var(--main-padding);
+    min-height: min(300px, 90vh);
+    box-shadow: inset 0 0 5px #0003;
+}

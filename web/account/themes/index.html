@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Theme Picker</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Theme Settings</h2>
+            <details>
+                <summary>Help: Changing your theme</summary>
+                <p>
+                    Upon clicking an entry in the dropdown menu below, the page 
+                    should automatically reload, and you should see that the website's
+                    design has been changed.
+                </p>
+            </details>
+            <form>
+                <select id="theme-select" name="theme" onchange="doc.el('#submit-button').click()">
+                    <option disabled selected>Loading themes...</option>
+                </select>
+                <input type="submit" value="Select" id="submit-button" style="display: none;"/>
+            </form>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import handleForm from "/static/js/common/form.js";
+            import ready from "/static/js/common/ready.js";
+            import getSession from "/static/js/common/session.js";
+            
+            ready.then(async () => {
+                const session = await getSession();
+                
+                if(!session || !session.user) {
+                    return doc.el("main").html("You do not have an account. Please log in before attempting to change your theme.");
+                }
+                
+                const response = await api("themes/list");
+                
+                const select = doc.el("#theme-select")
+                    .html("");
+                
+                for(let theme of response.themes) {
+                    let option = select.crel("option").attr("value", theme.id).txt(theme.name);
+                    
+                    if(session.user.theme === theme.id) {
+                        option.attr("selected", "yes");
+                    }
+                }
+                
+                handleForm(async formData => {
+                    const selected_theme = formData.get("theme");
+                    
+                    const res = await api("themes/set", {
+                        theme: selected_theme
+                    });
+                    if(res.type !== "success") return res;
+                    
+                    window.location.reload();
+                });
+            });
+            
+        </script>
+    </body>
+</html>

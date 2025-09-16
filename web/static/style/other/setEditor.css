@@ -1,0 +1,21 @@
+.set-editor {
+    padding: 5px 0;
+}
+
+.vocab-editor-terms {
+    margin-bottom: 8px;
+}
+
+.vocab-editor-term {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2px;
+}
+
+.vocab-editor-definition {
+    width: 100%;
+}
+
+.vocab-editor-hint {
+    width: 40%;
+}

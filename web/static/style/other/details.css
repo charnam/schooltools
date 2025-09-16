@@ -1,0 +1,18 @@
+
+
+details {
+    margin: 10px;
+}
+
+summary {
+    user-select: none;
+    cursor: pointer;
+    font-style: italic;
+}
+details[open] summary {
+    margin-bottom: 1em;
+}
+
+abbr {
+    cursor: help;
+}

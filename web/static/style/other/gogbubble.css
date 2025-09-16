@@ -1,0 +1,13 @@
+/*
+    Some schools use a system called "GoGuardian" in order
+    to see student displays. That's fine and all, but the
+    all-seeing bubble at the top left of the screen can be
+    infuriating sometimes. This site is for school purposes,
+    anyway.
+    
+    If nothing changes, the line below should make it go away.
+*/
+
+[style*=" 16px"] {
+    display: none !important;
+}

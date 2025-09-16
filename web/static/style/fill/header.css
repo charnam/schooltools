@@ -1,0 +1,26 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, #0000, #0003);
+    user-select: none;
+}
+
+header .right-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+    margin: 5px;
+}
+
+header .right-side p {
+    margin: 0;
+}
+
+header .right-side .tagline {
+    font-style: italic;
+}
+
+header .right-side .links a {
+    margin-right: 7px;
+}

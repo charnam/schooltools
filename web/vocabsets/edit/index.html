@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Create Vocabulary Set</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Edit Vocabulary Set</h2>
+            <form>
+                <div id="set-editor"></div>
+                <button id="submit-button">Update Set</button>
+                <a href="javascript:openVocabPage('view')"><button type="button">Cancel changes and return</button></a>
+            </form>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import SetEditor from "/static/js/common/setEditor.js";
+            import ready from "/static/js/common/ready.js";
+            import handleForm from "/static/js/common/form.js";
+            import api from "/static/js/api.js";
+            import getSession from "/static/js/common/session.js";
+            import { getSet, openVocabPage } from "/static/js/pages/vocabsets.js";
+            
+            window.openVocabPage = openVocabPage; // javascript: urls
+            
+            ready.then(async () => {
+                const response = await getSet();
+                const session = await getSession();
+            
+                if(!session || session.user.id !== response.creator.id) {
+                    throw doc.el("form").html("You are not the owner of this set. Please log in.");
+                }
+                
+                const editor = new SetEditor(doc.el("#set-editor"));
+                
+                let title = response.set.title;
+                editor.value = {
+                    title,
+                    terms: response.terms
+                }
+                
+                handleForm(async () => {
+                    const result = await api("sets/update", {
+                        set: response.set.id,
+                        ...editor.value
+                    });
+                    
+                    if(result.type == "success") {
+                        window.location.href = "/vocabsets/view/?id="+response.set.id;
+                    }
+                    
+                    return result;
+                })
+                
+            });
+            
+        </script>
+    </body>
+</html>

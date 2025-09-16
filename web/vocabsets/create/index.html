@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Create Vocabulary Set</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Create Vocabulary Set</h2>
+            <details id="import-details">
+                <summary>Import from Quizlet</summary>
+                <form id="import-form">
+                    <p>
+                        Paste a link to your Quizlet set below, and
+                        we'll see if we can copy it. Make sure
+                        your link is to the main page of the set,
+                        with the flashcards at the top, and the terms at the bottom.
+                    </p>
+                    <input type="url" name="link" placeholder="Quizlet Set Link" />
+                    <input type="submit" value="Import" />
+                </form>
+            </details>
+            <p>
+                Create your vocabulary set below. Then, click the button
+                to save this set to your account. You can edit it later.
+            </p>
+            <form id="creation-form">
+                <div id="set-creation"></div>
+                <button id="submit-button">Save to Account</button>
+            </form>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import SetEditor from "/static/js/common/setEditor.js";
+            import ready from "/static/js/common/ready.js";
+            import handleForm from "/static/js/common/form.js";
+            import api from "/static/js/api.js";
+            import getSession from "/static/js/common/session.js";
+            import { getSetNonBlocking } from "/static/js/pages/vocabsets.js";
+            
+            ready.then(async () => {
+                const editor = new SetEditor(doc.el("#set-creation"));
+                
+                handleForm(doc.el("#creation-form"), async () => {
+                    const result = await api("sets/create", editor.value);
+                    
+                    if(result.type == "success" && result.setid) {
+                        window.location.href = "/vocabsets/view/?id="+result.setid;
+                    }
+                    
+                    return result;
+                })
+                
+                handleForm(doc.el("#import-form"), async result => {
+                    const link = result.get("link");
+                    
+                    const res = await api("other/quizlet-get", {
+                        path: link
+                    });
+                    console.log(res);
+                    
+                    if(res.type == "success")
+                        editor.value = res.formatted;
+                    else return res;
+                    
+                    doc.el("#import-details").removeAttribute("open");
+                    
+                })
+                
+                const response = await getSetNonBlocking();
+                
+                if(response.type == "success") {
+                    const session = await getSession();
+                
+                    let title = "Copy of "+response.set.title;
+                    if(!session || session.user.id !== response.creator.id) {
+                        title += " by "+response.creator.username;
+                    }
+                    
+                    editor.value = {
+                        title,
+                        terms: response.terms
+                    }
+                }
+            });
+            
+        </script>
+    </body>
+</html>

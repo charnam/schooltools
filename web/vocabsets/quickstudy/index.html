@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - View Set</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <div id="study-game">
+                <p>Loading game...</p>
+            </div>
+            <p>
+                <a href="javascript:openVocabPage('view')">View full set</a>
+            </p>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import ready from "/static/js/common/ready.js";
+            import {getSet, openVocabPage} from "/static/js/pages/vocabsets.js";
+            import StudyVocabGame from "/static/js/pages/studyvocab.js";
+            import {randArr, randInt} from "/static/js/common/random.js";
+            
+            window.openVocabPage = openVocabPage; // javascript: urls
+            
+            ready.then(async () => {
+                const response = await getSet();
+                const game = new StudyVocabGame(doc.el("#study-game"), response);
+            });
+            
+        </script>
+    </body>
+</html>

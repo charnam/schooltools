@@ -1,0 +1,13 @@
+.logo {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 8px;
+}
+
+.logo-title {
+    font-size: 30px;
+}
+
+.logo .logo-subtitle {
+    letter-spacing: 1px;
+}

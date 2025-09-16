@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Log In</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Welcome back!</h2>
+            <fieldset>
+                <legend>Log in</legend>
+                <form>
+                    <label for="username">Username</label><br>
+                    <input type="text" placeholder="Alphanumeric, dashes, underscores" name="username" /><br>
+                    <label for="password">Password</label><br>
+                    <input type="password" name="password" /><br>
+                    <input type="submit" value="Log in..." />
+                </form>
+            </fieldset>
+            <p>Looking to <a href="/account/register/">create an account</a>?</p>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import handleForm from "/static/js/common/form.js";
+
+            handleForm(async body => {
+                const response = await api("accounts/login", body);
+                if(response.type == "error") return response;
+                
+                window.location.href = "/vocabsets/";
+            });
+        </script>
+    </body>
+</html>

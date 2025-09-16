@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale: 1.0">
+        <title>SchoolTools - View Set</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2 id="set-title"></h2>
+            <div id="hidden-while-loading" style="display: none;">
+                <div id="info-flashcards"></div>
+                <details id="terms"></details>
+                <p>Actions:</p>
+                <ul>
+                    <li><a href="javascript:openVocabPage('quickstudy')">Quick Study</a></li>
+                    <li><a href="javascript:openVocabPage('edit')" id="edit-button" style="display: inline-block">Edit</a></li>
+                    <li><a href="javascript:openVocabPage('create')">Make a Copy</a></li>
+                </ul>
+            </div>
+            <p id="set-details">
+                Loading set details...
+            </p>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import ready from "/static/js/common/ready.js";
+            import {getSet, openVocabPage} from "/static/js/pages/vocabsets.js";
+            import Flashcards from "/static/js/common/flashcards.js";
+            import getSession from "/static/js/common/session.js";
+            
+            window.openVocabPage = openVocabPage; // javascript: urls
+            
+            ready.then(async () => {
+                
+                const response = await getSet();
+                
+                const flashcards = new Flashcards(doc.el("#info-flashcards"), response.terms);
+                
+                const detailsEl = doc.el("#set-details");
+                
+                doc.el("#hidden-while-loading").style.display = "contents";
+                doc.el("#set-title").html("").txt(response.set.title);
+                
+                const setCreationDate = new Date(response.set.creation).toLocaleDateString();
+                const setModificationDate = new Date(response.set.modification).toLocaleDateString();
+                
+                detailsEl
+                    .html("")
+                    .txt("Set created by ")
+                    .crel("a").attr("href", "/user/?id="+response.creator.id)
+                        .txt(response.creator.username)
+                    .prnt()
+                    .txt(" on ")
+                    .txt(setCreationDate);
+                
+                if(setModificationDate !== setCreationDate)
+                    detailsEl
+                        .txt(", last edited ")
+                        .txt(setModificationDate);
+                    
+                const table = doc.el("#terms")
+                    .crel("summary").txt("Terms in this set").prnt()
+                    .crel("table")
+                        .crel("tr")
+                            .crel("th").txt("Hint").prnt()
+                            .crel("th").txt("Definition").prnt()
+                        .prnt()
+                
+                for(let {hint, definition} of response.terms) {
+                    table
+                        .crel("tr")
+                            .crel("td").txt(hint).prnt()
+                            .crel("td").txt(definition).prnt()
+                        .prnt()
+                }
+                
+                const session = await getSession();
+                if(session && session.user.userid == response.creator.id)
+                    doc.el("#edit-button").style.display = "";
+                
+            })
+            
+        </script>
+    </body>
+</html>

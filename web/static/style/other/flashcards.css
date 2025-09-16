@@ -1,0 +1,85 @@
+.flashcards {
+	--margin: min(40px, 4vw);
+    width: 100%;
+    padding: 0 calc(var(--margin) * 2);
+    box-sizing: border-box;
+    aspect-ratio: 16 / 9;
+    transform-style: preserve-3d;
+    white-space: nowrap;
+}
+
+.card {
+    position: relative;
+	margin: var(--margin);
+	width: calc(100% - (var(--margin) * 2));
+	height: calc(100% - (var(--margin) * 2));
+    left: calc(-100% * var(--card));
+    perspective: 800px;
+    transform-style: preserve-3d;
+    user-select: none;
+    display: inline-block;
+    transition: left 0.2s ease-out;
+    transition-property: opacity, left;
+    white-space: wrap;
+    cursor: pointer;
+    --bg: linear-gradient(to bottom, #fff, #ddd);
+}
+
+.card-hint, .card-definition {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    transform: rotateX(0);
+    transition: transform 0.5s ease-in-out;
+    background: var(--bg);
+	box-shadow: 0 5px 10px #0003, inset 0 -5px 10px gray;
+	border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 19px;
+}
+
+.card-hint {
+    --rot: 180deg;
+}
+.card-definition {
+    --rot: -180deg;
+    z-index: -100;
+}
+
+.card:not(:is(.flashcards.flipped .selected)) .card-definition {
+    transform: rotateX(-180deg) translateZ(5px);
+}
+
+.flashcards.flipped .selected .card-hint {
+    transform: rotateX(180deg) translateZ(5px);
+}
+
+.card:not(.selected) {
+    opacity: 0.5;
+}
+.card:not(.selected) .card-definition {
+    display: none;
+}
+
+.card-count {
+    text-align: center;
+    position: relative;
+    padding-bottom: 14px;
+    user-select: none;
+}
+.card-count:after {
+    content: "";
+    width: var(--progress);
+    height: 2px;
+    background: black;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: inline-block;
+}

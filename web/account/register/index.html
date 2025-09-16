@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Register</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Are you new here?</h2>
+            <fieldset>
+                <legend>Register</legend>
+                <form>
+                    <label for="username">Username (don't use your real name! others can see)</label><br>
+                    <input type="text" placeholder="Alphanumeric, dashes, underscores" name="username" /><br>
+                    <label for="password">Password</label><br>
+                    <input type="password" name="password" /><br>
+                    <a href="./tips.html">Password Tips</a><br>
+                    <br>
+                    <label for="password">Password, again for good measure!</label><br>
+                    <input type="password" name="password-verify" /><br><br>
+                    <input type="submit" value="Register" />
+                </form>
+            </fieldset>
+            <p>Looking to <a href="/account/login/">log back in</a>?</p>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import handleForm from "/static/js/common/form.js";
+
+            handleForm(async formData => {
+                let username = formData.get("username");
+                let password = formData.get("password");
+                let passwordVerify = formData.get("password-verify");
+                
+                if(password !== passwordVerify) {
+                    return {type: "error", message: "Passwords do not match."};
+                }
+                
+                return await api("accounts/register", {username, password});
+                
+            })
+        </script>
+    </body>
+</html>

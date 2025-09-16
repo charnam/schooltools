@@ -1,0 +1,12 @@
+
+html {
+    background-image: linear-gradient(to bottom, #35f, #58f, #69f);
+}
+
+body {
+    background: linear-gradient(to bottom, #fff2, #fffa), linear-gradient(to bottom, #fff5, #fff3 40px, #0002 calc(100% - 60px), #0009);
+}
+
+header {
+    background-image: linear-gradient(to bottom, #fff5, #fff2 20%, #0002 90%, #0004 100%);
+}

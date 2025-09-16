@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Account Details</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Account Settings</h2>
+            <form>
+                <p>Loading account details...</p>
+            </form>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import ready from "/static/js/common/ready.js";
+            import getSession from "/static/js/common/session.js";
+            import accountSettings from "/static/js/pages/accountsettings.js";
+            
+            ready.then(async () => {
+                const session = await getSession();
+                if(!session || !session.user) {
+                    return doc.el("form").html("")
+                        .crel("p")
+                            .txt("You are not logged in. To manage your settings, ")
+                            .txt("please ").crel('a').attr("href", "/account/login/").txt('log in').prnt().txt(" first.")
+                        .prnt();
+                }
+                
+                accountSettings(doc.el("form").html(""), session.user);
+            })
+            
+        </script>
+    </body>
+</html>

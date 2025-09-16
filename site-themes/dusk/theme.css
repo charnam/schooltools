@@ -1,0 +1,15 @@
+
+html {
+    background-image: linear-gradient(to bottom, #333, #444);
+}
+
+body {
+    background: linear-gradient(to bottom, #aaa, #ccc);
+}
+
+.study-game {
+    --bg: #aaa;
+}
+.card {
+    --bg: linear-gradient(to bottom, #ccc, #aaa);
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Study with Quizlet</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <form id="hide-this">
+                <h2>Study Quizlet set</h2>
+                <p>
+                    Copy a link to your Quizlet set's main page, and paste it into the text box below.
+                    After submitting the link, you can play a game to test your vocabulary knowledge.
+                </p>
+                <input type="url" name="link" placeholder="Quizlet Set" />
+                <input type="submit" value="Load Set" />
+                <p>
+                    <i>Did you know that you can also create your own sets in SchoolTools? It's fast, free, and adless!</i>
+                </p>
+            </form>
+            <div id="study-game">
+            </div>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import ready from "/static/js/common/ready.js";
+            import handleForm from "/static/js/common/form.js";
+            import {getSet, openVocabPage} from "/static/js/pages/vocabsets.js";
+            import StudyVocabGame from "/static/js/pages/studyvocab.js";
+            import {randArr, randInt} from "/static/js/common/random.js";
+            
+            window.openVocabPage = openVocabPage; // javascript: urls
+            
+            ready.then(async () => {
+                handleForm(async result => {
+                    const link = result.get("link");
+                    
+                    const res = await api("other/quizlet-get", {
+                        path: link
+                    });
+                    
+                    if(res.type !== "success") return res;
+                    
+                    doc.el("#hide-this").style.display = "none";
+                    new StudyVocabGame(doc.el("#study-game"), res.formatted);
+                })
+            });
+            
+        </script>
+    </body>
+</html>

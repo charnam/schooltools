@@ -1,0 +1,30 @@
+{
+  "name": "schooltools",
+  "version": "0.0.0",
+  "description": "Various open-source tools for assisting in memorization and learning.",
+  "homepage": "https://github.com/charnam/schooltools#readme",
+  "bugs": {
+    "url": "https://github.com/charnam/schooltools/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charnam/schooltools.git"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": "CHARNAM",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ansi-regex": "^6.2.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {}
+}
