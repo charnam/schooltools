@@ -29,3 +29,11 @@ main {
     min-height: min(300px, 90vh);
     box-shadow: inset 0 0 5px #0003;
 }
+
+a {
+    color: #05f;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}

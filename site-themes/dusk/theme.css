@@ -13,3 +13,6 @@ body {
 .card {
     --bg: linear-gradient(to bottom, #ccc, #aaa);
 }
+a {
+    color: #059;
+}

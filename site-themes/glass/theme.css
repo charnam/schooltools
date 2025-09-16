@@ -10,3 +10,7 @@ body {
 header {
     background-image: linear-gradient(to bottom, #fff5, #fff2 20%, #0002 90%, #0004 100%);
 }
+
+a {
+    color: #048;
+}
