@@ -24,7 +24,7 @@
     "express": "^5.1.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
-    "uuid": "^13.0.0"
-  },
-  "devDependencies": {}
+    "uuid": "^13.0.0",
+    "video.js": "^8.23.4"
+  }
 }

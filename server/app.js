@@ -9,6 +9,7 @@ app.listen(PORT, () => {
 });
 
 app.use(express.static("web"));
+app.use("/static/imports/videojs/", express.static("node_modules/video.js/dist"));
 app.use(express.json());
 app.use(cookieParser());
 

@@ -49,7 +49,8 @@ function refill() {
                             "Completely FOSS!",
                             "Makes memorization less boring!",
                             "Foreign language classes welcome!",
-                            "Ready to help you study!"
+                            "Ready to help you study!",
+                            "Now in your science class!"
                         ])
                     ).prnt()
                 ;

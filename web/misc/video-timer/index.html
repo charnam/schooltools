@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SchoolTools - Video Stopwatch</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Video Stopwatch</h2>
+            <div id="videostopwatch"></div>
+            <details>
+                <summary>Help: Using the Video Stopwatch</summary>
+                <p>
+                    To use the stopwatch, you must first either record or
+                    import a video. Complete this step first.
+                </p>
+                <p>
+                    Once you've uploaded your video, you'll notice two phrases
+                    that appear often, "start frame" and "end frame."
+                    The "Start Frame" is the exact time when the 
+                    action you're recording starts. Right when
+                    the action you're recording occurs, pause the video, and
+                    click "Set Start Frame." The "End Frame" allows you to choose
+                    what time your stopwatch ends.
+                    Right when the action you're recording is completed,
+                    click "Set End Frame."
+                </p>
+                <p>
+                    The "Segment Time" is how long the section you've chosen lasts.
+                    "Segment Time" is probably what you want to write down.
+                </p>
+            </details>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import ready from "/static/js/common/ready.js";
+            import VideoStopwatch from "/static/js/pages/videostopwatch.js";
+            
+            ready.then(async () => {
+                
+                const stopwatch = new VideoStopwatch(doc.el("#videostopwatch"));
+                
+            });
+            
+        </script>
+    </body>
+</html>
