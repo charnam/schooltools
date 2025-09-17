@@ -23,7 +23,7 @@ function refill() {
                         .prnt()
                         .crel("p").addc("links")
                             .crel("a").attr("href", "/misc/")
-                                .txt("Miscellaneous Tools").prnt()
+                                .txt("Miscellaneous").prnt()
                             .crel("a").attr("href", "/vocabsets/")
                                 .txt("Vocabulary").prnt()
                             .crel("a").attr("href", "/account/")
