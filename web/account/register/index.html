@@ -40,9 +40,10 @@
                 if(password !== passwordVerify) {
                     return {type: "error", message: "Passwords do not match."};
                 }
+                const res = await api("accounts/register", {username, password});
+                if(res.type !== "success") return res;
                 
-                return await api("accounts/register", {username, password});
-                
+                window.location.href = "/account/welcome/";
             })
         </script>
     </body>

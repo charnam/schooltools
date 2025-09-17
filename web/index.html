@@ -34,5 +34,15 @@
             </p>
         </main>
         <footer></footer>
+        <script type="module">
+            import getSession from "/static/js/common/session.js";
+            
+            (async () => {
+                const session = await getSession();
+                
+                if(session && session.user)
+                    window.location.href = "/account/welcome/";
+            })();
+        </script>
     </body>
 </html>

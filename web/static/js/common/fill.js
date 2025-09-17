@@ -55,6 +55,15 @@ function refill() {
                     ).prnt()
                 ;
                 break;
+            case "username":
+                el.html("").txt("(...)")
+                getSession().then(session => {
+                    if(!session || !session.user)
+                        el.html("").txt("guest");
+                    else
+                        el.html("").txt(session.user.username);
+                })
+                break;
             case "header-user-info":
                 el.addc("user-info")
                     .txt("Loading user info...")

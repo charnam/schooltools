@@ -64,6 +64,8 @@ register({
                 password: "string"
             },
             func: async (body, session, _req, res) => {
+                return error("Registration has been temporarily disabled. Sorry!");
+                
                 const db = await database;
                 
                 if(body.username.length < 3)
