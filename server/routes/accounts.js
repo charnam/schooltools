@@ -77,7 +77,7 @@ register({
                 if(body.password.length < 8)
                     return error("Password should be at least 8 characters long");
                 
-                if(!/^[a-zA-Z0-9_\-]$/.test(body.username))
+                if(!/^[a-zA-Z0-9_\-]+$/.test(body.username))
                     return error("This username contains invalid characters. Letters, numbers, dashes, and underscores are allowed.");
                 
                 const hashedPassword = await bcrypt.hash(body.password, 12);
