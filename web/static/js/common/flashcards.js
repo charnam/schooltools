@@ -112,8 +112,10 @@ class Flashcards {
                 this.lastCard();
             if(key == "right")
                 this.nextCard();
-            if(key == " ")
+            if(key == " ") {
                 this.flipped = !this.flipped;
+                event.preventDefault();
+            }
         })
     }
 }
