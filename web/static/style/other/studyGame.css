@@ -83,6 +83,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    padding: 10px 40px;
+    overflow-y: auto;
 }
 
 .study-game .answers {
@@ -97,6 +100,8 @@
     padding: 0 var(--gaps);
     padding-bottom: var(--gaps);
     gap: var(--gaps);
+    box-sizing: border-box;
+    height: 50%;
 }
 
 .study-game .answers .answer-button {
@@ -108,12 +113,15 @@
     border-radius: 10px;
     padding: 8px;
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
+    text-align: center;
     background: #0002;
     text-shadow: 0 1px 0 gray;
     transition: background-color 0.5s ease-in-out;
     box-shadow: inset 0 10px 10px #fff8, 0 2px 5px #0003;
+    overflow-y: auto;
 }
 
 .study-game:fullscreen .answers .answer-button {
