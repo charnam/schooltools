@@ -261,7 +261,7 @@ class StudyGame {
             })
     }
     
-    constructor(container, nextQuestion) {
+    constructor(container, nextQuestion, autoNext = true) {
         this.container = container.addc("study-game").html("");
         this.onNextQuestion = nextQuestion;
         
@@ -302,6 +302,9 @@ class StudyGame {
         this.container.on("click", () => {
             this.showNext();
         })
+        
+        if(nextQuestion && autoNext)
+            this.onNextQuestion(this);
     }
 }
 

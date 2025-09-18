@@ -47,7 +47,7 @@ class StudyVocabGame extends StudyGame {
     }
     
     constructor(container, vocabSet) {
-        super(container, () => this.vocabNextQuestion());
+        super(container, () => this.vocabNextQuestion(), false);
         this.vocabSet = vocabSet;
         this.vocabNextQuestion();
     }
