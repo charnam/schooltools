@@ -9,9 +9,9 @@ function accountSettings(container, user) {
             .txt(".")
         .prnt()
         .crel("ul")
-            .crel("li").crel("a").attr("href", "/account/profile/").txt("Edit Profile").prnt()
-            .crel("li").crel("a").attr("href", "/account/themes/").txt("Change site theme").prnt()
-            .crel("li").crel("a").attr("href", "/account/logout/").txt("Log out").prnt()
+            .crel("li").crel("a").attr("href", "/account/profile/").txt("Edit Profile").prnt().prnt()
+            .crel("li").crel("a").attr("href", "/account/themes/").txt("Change site theme").prnt().prnt()
+            .crel("li").crel("a").attr("href", "/account/logout/").txt("Log out").prnt().prnt()
         .prnt()
 }
 

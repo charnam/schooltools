@@ -1,0 +1,41 @@
+
+@media screen and (max-width: 600px) {
+    #view-wrapper {
+        display: none !important;
+    }
+    body:after {
+        content: "Your screen appears to be too small. Please make this window larger, or try zooming out by pressing Command + Minus";
+        font-size: 32px;
+        font-family: sans-serif;
+    }
+}
+
+#pregame {
+    display: flex;
+}
+
+#pregame-sidebar {
+    width: 300px;
+    flex: none;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#joincode {
+    text-align: left;
+    font-size: 40px;
+    letter-spacing: 5px;
+}
+
+#joincode:before {
+    content: 'Join Code';
+    display: block;
+    font-size: 20px;
+    letter-spacing: 0;
+    color: #0005;
+    height: 20px;
+}
+
+#pregame-players-list {
+    width: 100%;
+}

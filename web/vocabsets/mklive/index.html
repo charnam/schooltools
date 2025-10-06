@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale: 1.0">
+        <title>SchoolTools - Create Live Game</title>
+        <link rel="stylesheet" href="/static/style/global.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <h2>Create Live Game</h2>
+            <p>
+                <a href="javascript:openVocabPage('view')">Return</a>
+            </p>
+            <fieldset>
+                <legend>Game Options</legend>
+                <form>
+                    <input type="hidden" name="set" id="setid" />
+                    <p>
+                        <label>
+                            End game after
+                            <input type="number" name="endvalue" style="width: 64px;" value="30"/>
+                            <select name="endtype" id="endtype" value="questions">
+                                <option value="minutes">minutes of game time</option>
+                                <option value="questions" selected>questions have been answered by a player</option>
+                                <option value="questions_everyone">questions have been answered by everyone</option>
+                                <option value="questions_total" disabled>questions have been answered in total</option>
+                                <option value="until_all_eliminated" disabled>everyone is eliminated (players lose after specified number of incorrect answers)</option>
+                            </select>
+                        </label>
+                    </p>
+                    <ul id="questions_everyone_extra" style="display: none;">
+                        <li>
+                            <label>
+                                Should players be allowed to continue after reaching your goal?
+                                <input type="checkbox" name="playerscontinue" checked>
+                            </label>
+                        </li>
+                    </ul>
+                    <p>
+                        <label>
+                            Players answer with 
+                            <select name="answerwith">
+                                <option value="both">Both</option>
+                                <option value="hint">Hint</option>
+                                <option value="definition">Definition</option>
+                            </select>
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Penalty questions?
+                            <input type="checkbox" checked name="penalties" value="true" id="penalties" />
+                        </label>
+                    </p>
+                    <p id="damage-disable">
+                        <label>
+                            Enable damage?
+                            <select name="damage" value="targeted" id="damage-select">
+                                <option value="disabled">Disabled</option>
+                                <option value="random">Random</option>
+                                <option value="targeted" selected>Targeted</option>
+                            </select>
+                        </label>
+                    </p>
+                    <details>
+                        <summary>Help: What is "damage?"</summary>
+                        <p>
+                            This feature allows players with an answer streak to inflict
+                            penalty / "extra" questions on others. You may, here, set
+                            whether players can choose who gets the penalty.
+                        </p>
+                        <p>
+                            "Targeted" allows players to select someone who they think
+                            should receive penalty questions. This will usually be a
+                            random person, but optionally players may change who they
+                            are targeting.
+                        </p>
+                        <p>
+                            "Random" disallows players from choosing who gets the penalty.
+                            This can be more fair if someone is consistently the receiver
+                            of penalty questions.
+                        </p>
+                        <p>
+                            "Disabled" makes the game completely ignore whether players are doing well.
+                            This may be better if you want less distraction, however do note that
+                            this will result in a shorter game overall.
+                        </p>
+                    </details>
+                    <input type="submit" value="Start Game" />
+                </form>
+            </fieldset>
+        </main>
+        <footer></footer>
+        <script type="module">
+            import api from "/static/js/api.js";
+            import handleForm from "/static/js/common/form.js";
+            import ready from "/static/js/common/ready.js";
+            import {openVocabPage} from "/static/js/pages/vocabsets.js";
+            
+            window.openVocabPage = openVocabPage; // javascript: urls
+            
+            ready.then(async () => {
+                let original_damage_value = doc.el("#damage-select").value;
+                function updateVisibleButtons() {
+                    let newValue = doc.el("#penalties").checked;
+                    
+                    if(newValue == false) {
+                        doc.el("#damage-disable").attr("disabled", "yes");
+                        original_damage_value = doc.el("#damage-select").value;
+                        doc.el("#damage-select").value = "disabled";
+                    } else {
+                        doc.el("#damage-disable").removeAttribute("disabled");
+                        doc.el("#damage-select").value = original_damage_value;
+                    }
+                    
+                    const endtype = doc.el("#endtype").value;
+                    if(endtype == "questions_everyone")
+                        doc.el("#questions_everyone_extra").style.display = "";
+                    else
+                        doc.el("#questions_everyone_extra").style.display = "none";
+                    
+                }
+                doc.el("#penalties").on("change", updateVisibleButtons);
+                doc.el("#endtype").on("change", updateVisibleButtons);
+                updateVisibleButtons();
+                
+                doc.el("#setid").value =
+                    new URLSearchParams(window.location.search)
+                        .get("id");
+                
+                handleForm(async (formData) => {
+                    const result = await api("games/thievery/create", formData);
+                    
+                    if(result.type == "success") {
+                        // TODO: remove moderation key from URL bar (use cookies)
+                        window.location.href =
+                            "/live/thievery/spectate/?id="+result.gameid+"#"+result.moderationKey;
+                    }
+                    
+                    return result;
+                })
+            })
+            
+        </script>
+    </body>
+</html>

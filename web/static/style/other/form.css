@@ -4,10 +4,10 @@ form[error]::after {
 	display: block;
 	margin-top: 5px;
 }
-form[disabled] {
-	opacity: 0.5;
-	pointer-events: none;
-}
 input[type="text"], input[type="password"] {
 	width: 230px;
+}
+:not(input, textarea)[disabled] {
+	opacity: 0.5;
+	pointer-events: none;
 }

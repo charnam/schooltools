@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale: 1.0">
+        <title>Thievery - Leaderboard</title>
+        <link rel="stylesheet" href="/static/style/games/thievery/leaderboard.css" />
+        <script type="module" src="/static/js/global.js"></script>
+    </head>
+    <body>
+        <div id="view-wrapper">
+            <div id="server-error">
+                <div id="server-error-message">
+                    
+                </div>
+            </div>
+            <div id="pregame">
+                <div id="pregame-sidebar">
+                    <div id="joincode"></div>
+                </div>
+                <div id="pregame-main">
+                    <div id="pregame-header-bar">
+                        
+                    </div>
+                    <div id="pregame-players-list">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="module">
+            import ready from "/static/js/common/ready.js";
+            import ThieverySpectator from "/static/js/games/thievery/ThieverySpectator.js";
+            
+            ready.then(async () => {
+                const query = new URLSearchParams(window.location.search);
+                
+                const client = new ThieverySpectator({
+                    moderationKey: window.location.hash.replace("#", "")
+                });
+                
+            });
+        </script>
+    </body>
+</html>

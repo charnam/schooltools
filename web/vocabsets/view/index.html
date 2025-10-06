@@ -17,8 +17,9 @@
                 <p>Actions:</p>
                 <ul>
                     <li><a href="javascript:openVocabPage('quickstudy')">Quick Study</a></li>
-                    <li><a href="javascript:openVocabPage('edit')" id="edit-button" style="display: inline-block">Edit</a></li>
+                    <li id="edit-button" style="display: none"><a href="javascript:openVocabPage('edit')">Edit</a></li>
                     <li><a href="javascript:openVocabPage('create')">Make a Copy</a></li>
+                    <li><a href="javascript:openVocabPage('mklive')">Start a live game</a></li>
                 </ul>
             </div>
             <p id="set-details">
@@ -80,7 +81,7 @@
                 }
                 
                 const session = await getSession();
-                if(session && session.user.userid == response.creator.id)
+                if(session && session.user.id == response.creator.id)
                     doc.el("#edit-button").style.display = "";
                 
             })

@@ -1,0 +1,38 @@
+
+body {
+    font-family: sans;
+}
+
+main {
+    --main-padding: 20px;
+}
+
+main ul {
+    border: 1px solid gray;
+    list-style: none;
+    border-radius: 5px;
+    padding-left: 0;
+}
+
+main ul li {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    border-top: 1px solid gray;
+    padding-left: 20px;
+}
+
+main ul li:first-child {
+    border-top: none;
+}
+
+main h2:first-child {
+    margin-top: 0;
+}
+
+main h3 {
+    margin-bottom: 0;
+}
+
+main h3 + ul {
+    margin-top: 5px;
+}

@@ -1,6 +1,6 @@
 
-const fs = require("fs");
-const app = require("./app.js");
+require("./httpServer.js");
+require("./io.js");
 
-require("./routes/main.js")
-
+require("./routes/main.js");
+require("./live/main.js");

@@ -1,11 +1,14 @@
 /*
     Some schools use a system called "GoGuardian" in order
-    to see student displays. That's fine and all, but the
-    all-seeing bubble at the top left of the screen can be
-    infuriating sometimes. This site is for school purposes,
-    anyway.
+    to view student displays. That's fine and all, but the
+    little bubble at the top left of the screen can be
+    infuriating, especially in a live game. This site is for
+    school purposes, anyway.
     
-    If nothing changes, the line below should make it go away.
+    The line below should make the bubble disappear. It's a
+    "catch-all," but this is about all I can remember right now.
+    
+    TODO: make it not use the generic "16px" value as a selector
 */
 
 [style*=" 16px"] {
