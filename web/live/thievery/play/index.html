@@ -3,24 +3,25 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale: 1.0">
-        <title>Thievery - Leaderboard</title>
-        <link rel="stylesheet" href="/static/style/games/thievery/leaderboard.css" />
+        <title>Thievery - Play</title>
+        <link rel="stylesheet" href="/static/style/games/thievery/player.css" />
         <script type="module" src="/static/js/global.js"></script>
     </head>
     <body>
         <div id="view-wrapper">
+            <div id="pregame">
+                <div id="pregame-message">
+                    You're in! Wait patiently for the game to start...
+                </div>
+            </div>
         </div>
         <script type="module">
             import ready from "/static/js/common/ready.js";
-            import ThieverySpectator from "/static/js/games/thievery/ThieverySpectator.js";
+            import ThieveryPlayer from "/static/js/games/thievery/ThieveryPlayer.js";
             
             ready.then(async () => {
                 const query = new URLSearchParams(window.location.search);
-                
-                const client = new ThieverySpectator({
-                    moderationKey: window.location.hash.replace("#", "")
-                });
-                
+                const client = new ThieveryPlayer();
             });
         </script>
     </body>

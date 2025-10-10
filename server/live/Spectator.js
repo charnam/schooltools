@@ -1,19 +1,49 @@
-const Player = require("./Player.js");
+const GameClient = require("./GameClient.js");
 
-class Spectator extends Player {
+function mapPlayer(player) {
+    return {
+        username: player.username,
+        id: player.id
+    };
+}
+
+class Spectator extends GameClient {
     isModerator = false
     
+    updatePlayersPregame() {
+        this.socket.emit("players",
+            Object.values(this.game.players).map(mapPlayer)
+        );
+    }
+
     constructor(...args) {
         super(...args);
         if(this.initialQuery.moderationKey == this.game.moderationKey) {
             this.isModerator = true;
             this.socket.on("startgame", () => {
-                this.game.countDownToStart();
+                if(this.game.state == "pregame") {
+                    this.game.countDownToStart();
+                }
             });
-            this.socket.emit("moderator")
+            this.socket.on("kick-player", playerid => {
+                if(this.game.state == "pregame") {
+                    let player = this.game.players[playerid];
+                    if(!player) return false;
+                    
+                    player.socket.emit("server-disconnect", "You have been kicked from the game.");
+                    player.socket.disconnect();
+                    delete this.game.players[playerid];
+                    
+                    this.updatePlayersPregame();
+                }
+            });
+            this.socket.emit("moderator");
             this.socket.emit("joincode", this.game.joincode);
         }
         
+        if(this.game.state == "pregame") {
+            this.updatePlayersPregame();
+        }
         
     }
 }

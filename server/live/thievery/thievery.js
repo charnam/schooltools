@@ -10,9 +10,55 @@ const ThieverySpectator = require("./ThieverySpectator.js");
 const runningGames = {};
 const joinCodes = {};
 
+const failedJoinCodeTests = [];
+
 register({
     "games": {
         "thievery": {
+            "testcode": {
+                requirements: {
+                    joincode: "string"
+                },
+                func: async body => {
+                    let returnValue = false;
+                    if(joinCodes[body.joincode])
+                        returnValue = true;
+                    else
+                        returnValue = false;
+                    
+                    if(!returnValue) {
+                        failedJoinCodeTests.push(Date.now());
+                    }
+                    
+                    preventativeDelay: {
+                        const lastRequestTimes = 
+                            failedJoinCodeTests.slice(-5)
+                        
+                        const distanceBetweenLast = [];
+                        
+                        let lastTimestamp = lastRequestTimes[0];
+                        for(let index in lastRequestTimes) {
+                            if(index == 0) continue;
+                            
+                            const timestamp = lastRequestTimes[index];
+                            distanceBetweenLast.push(Date.now() - timestamp);
+                            lastTimestamp = timestamp;
+                        }
+                        
+                        const lastRequestTimesAverage =
+                            distanceBetweenLast.reduce((a,b) => a+b, 0) / distanceBetweenLast.length;
+                        
+                        const waitTime =
+                            Math.max((10_000 - lastRequestTimesAverage) / 3, 0);
+                        
+                        await new Promise(res => setTimeout(res, waitTime));
+                    }
+                    if(returnValue)
+                        return success();
+                    else
+                        return error("No game found. Check that you've entered the code correctly.");
+                }
+            },
             "create": {
                 requirements: {
                     endtype: "string",
@@ -106,10 +152,16 @@ register_live({
                 const spectator = new ThieverySpectator(socket, game, requestDetails, session);
                 game.addSpectator(spectator);
             } else if(requestDetails.type == "play") {
-                let game = runningGames[joinCodes[requestDetails.joinCode]]; // Find game by join code for players
+                let game = runningGames[joinCodes[requestDetails.joincode]]; // Find game by join code for players
                 if(!game) return error("Invalid join code");
                 
                 if(game.state == "pregame") {
+                    const username = requestDetails.username;
+                    if(!username) return error("No username specified!");
+                    if(username.length < 3) return error("Your username is too short. Please choose a longer username.");
+                    if(username.length > 16) return error("Your username is too long. Please choose a shorter username.");
+                    if(!/^[a-zA-Z0-9\s]+$/.test(username)) return error("Your name includes symbols. You cannot have symbols in your name.")
+                    
                     const player = new ThieveryPlayer(socket, game, requestDetails, session);
                     game.addPlayer(player);
                 } else {

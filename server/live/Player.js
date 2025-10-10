@@ -1,13 +1,10 @@
+const GameClient = require("./GameClient.js");
 
-class Player { // Spectator inherits this, keep things bare
-    constructor(socket, game, query, session) {
-        this.socket = socket;
-        if(session && session.user)
-            this.userid = session.user.id;
-        this.game = game;
-        this.initialQuery = query;
+class Player extends GameClient {
+    constructor(...args) {
+        super(...args);
         
-        this.socket.emit("gamestate", game.state);
+        this.username = this.initialQuery.username;
     }
 }
 

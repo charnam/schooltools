@@ -13,12 +13,13 @@ class Game extends EventEmitter {
     
     set state(value) {
         this._state = value;
+        this.emit("statechange", value);
     }
     get state() {
         return this._state;
     }
 
-    players = [];
+    players = {};
     spectators = [];
     moderationKey = null;
 
@@ -31,11 +32,14 @@ class Game extends EventEmitter {
     handleNewSpectator(spectator) {}
 
     addPlayer(player) {
-        this.players.push(player);
+        this.players[player.id] = player;
         player.socket.join(this.id);
         player.socket.join("players");
         this.handleNewPlayer(player);
-        player.emit("gamestate", this.state);
+        
+        if(this.state == "pregame")
+            this.spectators.forEach(spectator => spectator.updatePlayersPregame());
+        
         return player;
     }
 
@@ -48,27 +52,27 @@ class Game extends EventEmitter {
     }
     
     async countDown() {
-        const countDownSec = secondsLeft => new Promise(async res => {
-            if(secondsLeft > 0) {
-                this.toClients.emit("countdown", secondsLeft);
-                await countDownSec(secondsLeft-1);
-            }
-            res();
+        this.state = "counting_down";
+        
+        const countDown = secondsLeft => new Promise(async res => {
+            this.toClients.emit("countdown", secondsLeft);
+            console.log(secondsLeft);
+            setTimeout(res, 1000);
         });
         
-        await countDownSec(3);
+        await countDown(3);
+        await countDown(2);
+        await countDown(1);
     }
     
     countDownToStart() {
-        this.state = "counting_down";
-        
         this.countDown().then(() => {
             this.start();
         });
     }
     
     start() {
-        this.state = "started";
+        this.state = "game";
     }
     
     constructor() {

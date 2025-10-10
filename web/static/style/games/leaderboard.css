@@ -25,6 +25,7 @@
     text-align: left;
     font-size: 40px;
     letter-spacing: 5px;
+    user-select: text;
 }
 
 #joincode:before {
@@ -36,6 +37,46 @@
     height: 20px;
 }
 
-#pregame-players-list {
+
+#pregame-main {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+}
+
+#pregame-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    font-size: 20px;
+}
+
+#startgame {
+    background: linear-gradient(to bottom, white, #ccc);
+    border: 1px solid gray;
+    border-radius: 5px;
+    font-size: inherit;
+    padding: 5px 20px;
+    box-shadow: 0 5px 5px #0005;
+    text-shadow: 0 1px #fff;
+    cursor: pointer;
+}
+
+.player {
+    width: 320px;
+    background: linear-gradient(to bottom, #000a, #000);
+    font-size: 25px;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    margin: 5px;
+    border: 1px solid #0004;
+    color: white;
+    box-shadow: 0 5px 10px #000a;
+}
+
+.moderator .player:hover {
+    text-decoration: line-through;
+    cursor: pointer;
 }

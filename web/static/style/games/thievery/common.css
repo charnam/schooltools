@@ -2,6 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Zalando+Sans:ital,wdth,wght@0,75..125,200..900;1,75..125,200..900&display=swap');
 
 body {
-    background: white;
+    background: var(--default-background-color);
     font-family: "Zalando Sans", arial;
 }

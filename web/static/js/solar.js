@@ -60,8 +60,8 @@ Element.prototype.sid = function(id){ // set ID
 
 function htmlspecialchars(text) {
     
-    e = doc.crel("htmlspc").html("");
-    o = e.txt(text).innerHTML;
+    var e = doc.crel("htmlspc").html("");
+    var o = e.txt(text).innerHTML;
     e.remove(); 
     return o;
     
@@ -69,8 +69,8 @@ function htmlspecialchars(text) {
 
 function unhtmlspecialchars(text) {
     
-    e = doc.crel("unhtmlspc").html("");
-    o = e.html(text).innerText;
+    var e = doc.crel("unhtmlspc").html("");
+    var o = e.html(text).innerText;
     e.remove(); 
     return o;
     
@@ -123,7 +123,6 @@ Element.prototype.anim = function(settings) {
     var animations = [];
     Object.entries(settings).forEach(function(setting){
         
-        
         if(props[setting[0]]) {
             setting[1].forEach(function(key, index) {
                 if(animations[index] == undefined)
@@ -164,7 +163,7 @@ Element.prototype.anim = function(settings) {
     var animation = [];
     var animation_timeouts = [];
     (async function() {
-        for(animae in toAnimate) {
+        for(let animae in toAnimate) {
             let animated = toAnimate[animae];
             
             animation.push(
@@ -176,6 +175,7 @@ Element.prototype.anim = function(settings) {
                         direction: settings.direction !== undefined ? settings.direction : "normal"
                     })
             );
+            
             if(settings.keepValues || settings.keepValues === undefined)
                 Object.entries(animations[animations.length-1]).forEach(function(prop){
                     

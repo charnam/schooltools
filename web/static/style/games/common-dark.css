@@ -1,0 +1,9 @@
+:root {
+    --default-background-color: #000;
+    --text: #fff;
+    --text-shadow: #0008;
+}
+
+body {
+    color: white;
+}

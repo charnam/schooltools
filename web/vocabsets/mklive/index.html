@@ -15,7 +15,15 @@
                 <a href="javascript:openVocabPage('view')">Return</a>
             </p>
             <fieldset>
-                <legend>Game Options</legend>
+                <legend>Game Options -
+                    <select id="preset">
+                        <optgroup label="Option Presets">
+                            <option value="classic" selected>Classic</option>
+                            <option value="graded">Graded</option>
+                            <option value="custom" disabled hidden>Custom</option>
+                        </optgroup>
+                    </select>
+                </legend>
                 <form>
                     <input type="hidden" name="set" id="setid" />
                     <p>
@@ -34,7 +42,7 @@
                     <ul id="questions_everyone_extra" style="display: none;">
                         <li>
                             <label>
-                                Should players be allowed to continue after reaching your goal?
+                                Should players continue answering questions until everyone reaches your goal?
                                 <input type="checkbox" name="playerscontinue" checked>
                             </label>
                         </li>
@@ -126,6 +134,15 @@
                 doc.el("#penalties").on("change", updateVisibleButtons);
                 doc.el("#endtype").on("change", updateVisibleButtons);
                 updateVisibleButtons();
+                
+                
+                doc.el("#preset").on("change", (evt) => {
+                    console.log(evt.target.value);
+                })
+                
+                doc.el("form").on("change", evt => {
+                    doc.el("#preset").value = "custom";
+                });
                 
                 doc.el("#setid").value =
                     new URLSearchParams(window.location.search)
