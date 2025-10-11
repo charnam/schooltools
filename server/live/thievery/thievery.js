@@ -129,7 +129,7 @@ register({
                     if(set.terms.length < 4)
                         return error("The vocabulary set needs at least 4 terms in order to start a live game");
 
-                    let game = new ThieveryGame(set, body);
+                    let game = new ThieveryGame(set, gameArgs);
 
                     runningGames[game.id] = game;
                     joinCodes[game.joincode] = game.id;

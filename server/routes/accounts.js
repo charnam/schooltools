@@ -4,7 +4,7 @@ const register = require("./register-routes.js");
 const database = require("../common/database.js");
 const { error, success } = require("../common/states.js");
 
-const mkid = require("uuid").v4;
+const mkid = require("crypto").randomUUID;
 
 const bcrypt = require("bcrypt");
 

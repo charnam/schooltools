@@ -16,7 +16,7 @@
             </p>
             <fieldset>
                 <legend>Game Options -
-                    <select id="preset">
+                    <select id="preset" disabled>
                         <optgroup label="Option Presets">
                             <option value="classic" selected>Classic</option>
                             <option value="graded">Graded</option>
@@ -137,7 +137,7 @@
                 
                 
                 doc.el("#preset").on("change", (evt) => {
-                    console.log(evt.target.value);
+                    // TODO: presets
                 })
                 
                 doc.el("form").on("change", evt => {

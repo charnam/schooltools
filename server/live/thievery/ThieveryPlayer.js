@@ -4,35 +4,44 @@ const Player = require("../Player.js");
 const { randArr, randInt } = require("../../common/random.js");
 
 class ThieveryPlayer extends Player {
+    
+    showingQuestion = false;
     penaltyQuestions = 0;
     answeredQuestions = 0;
     
     addPenaltyQuestions(count) {
         this.penaltyQuestions += count;
-        this.socket.emit("add-penalty", count);
+        this.socket.emit("add-penalty-questions", count);
         this.socket.emit("penalty-questions", this.penaltyQuestions);
     }
 
     askSpecificQuestion(details) {
+        
+        this.showingQuestion = true;
+        
         this.socket.emit("question", {
             question: details.question,
             answers: details.answers.map(answer => ({text: answer.text}))
         });
-
+        
         let correctAnswer;
-        for(let [btn, answer] in Object.entries(details.answers)) {
+        for(let [btn, answer] of Object.entries(details.answers)) {
             if(answer.isCorrect) {
                 correctAnswer = btn;
             }
         }
 
         this.socket.once("answer", value => {
+            this.showingQuestion = false;
             if(correctAnswer == value) {
-                this.socket.emit("correct");
+                this.socket.emit("answer-result", true);
+                this.game.emit("update");
                 this.askQuestion();
-                this.game.update();
             } else {
-                this.penaltyQuestions += 3;
+                this.socket.emit("answer-result", false);
+                this.addPenaltyQuestions(3);
+                this.game.emit("update");
+                this.askQuestion();
             }
         });
     }
@@ -44,30 +53,34 @@ class ThieveryPlayer extends Player {
         if(answerWith == "both")
             answerWith = randInt(0, 1) ? "definition" : "hint";
         
+        // askWith: inverse of answerWith
         const askWith = answerWith == "definition" ? "hint" : "definition";
         
         const question = {
             question: currentTerm[askWith],
             answers: [],
-            correctAnswer: randInt(0,3)
         };
         
-        const usedTerms = [];
+        const usedTerms = [currentTerm];
+        const correctAnswer = randInt(0,3)
         for(let q = 0; q < 4; q++) {
-            if(question.correctAnswer == q) {
-                let newTerm = currentTerm;
+            if(correctAnswer !== q) {
+                let newTerm = null;
                 
-                while(
-                    currentTerm == newTerm &&
-                    !usedTerms.includes(newTerm)
-                ) { // make sure we aren't getting two correct / same answers
-                    newTerm = getRandomTerm(set);
+                // make sure we aren't getting two correct / same answers
+                while(newTerm == null || usedTerms.includes(newTerm)) {
+                    newTerm = randArr(this.game.set.terms)
                 }
                 
                 usedTerms.push(newTerm);
-                answers.push({text: newTerm[answerWith]});
+                question.answers.push({
+                    text: newTerm[answerWith]
+                });
             } else {
-                answers.push({text: currentTerm[answerWith]});
+                question.answers.push({
+                    text: currentTerm[answerWith],
+                    isCorrect: true
+                });
             }
         }
         this.askSpecificQuestion(question);
@@ -75,6 +88,18 @@ class ThieveryPlayer extends Player {
 
     constructor(...args) {
         super(...args);
+        
+        this.game.on("statechange", () => {
+            if(this.game.state === "game")
+                this.askQuestion();
+            else {
+                if(this.showingQuestion) {
+                    this.socket.emit("cancel-question");
+                    this.showingQuestion = false;
+                }
+            }
+        })
+        
     }
 }
 

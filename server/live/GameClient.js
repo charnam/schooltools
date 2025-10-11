@@ -1,5 +1,5 @@
 
-const mkid = require("uuid").v4;
+const mkid = require("crypto").randomUUID;
 
 class GameClient {
     constructor(socket, game, query, session) {

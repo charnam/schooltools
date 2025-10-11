@@ -61,7 +61,6 @@
                     const res = await api("other/quizlet-get", {
                         path: link
                     });
-                    console.log(res);
                     
                     if(res.type == "success")
                         editor.value = res.formatted;

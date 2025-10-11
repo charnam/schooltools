@@ -3,7 +3,7 @@ const EventEmitter = require('events');
 const Player = require("./Player.js");
 const Spectator = require("./Spectator.js");
 
-const mkid = require("uuid").v4;
+const mkid = require("crypto").randomUUID;
 
 class Game extends EventEmitter {
     
@@ -56,7 +56,6 @@ class Game extends EventEmitter {
         
         const countDown = secondsLeft => new Promise(async res => {
             this.toClients.emit("countdown", secondsLeft);
-            console.log(secondsLeft);
             setTimeout(res, 1000);
         });
         

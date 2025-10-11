@@ -8,7 +8,7 @@ function randInt(low, high) {
 }
 
 function randArr(array) {
-    return array[randInt(0, array.length)];
+    return array[randInt(0, array.length-1)];
 }
 
 module.exports = {randArr, randInt};

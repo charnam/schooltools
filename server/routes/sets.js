@@ -4,7 +4,7 @@ const database = require("../common/database.js");
 const { error, success } = require("../common/states.js");
 const { getSet } = require("../common/sets.js");
 
-const mkid = require("uuid").v4;
+const mkid = require("crypto").randomUUID;
 
 function check_title(title) {
     
