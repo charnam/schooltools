@@ -2,7 +2,7 @@
 const path = require("path");
 const io = require("../io.js");
 const cookie = require("cookie");
-const { getSessionByToken } = require("../common/getsession.js");
+const { getSessionByToken } = require("./getsession.js");
 
 function register_route(route, details) {
     const namespace = io.of(route);

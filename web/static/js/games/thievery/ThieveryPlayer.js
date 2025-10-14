@@ -1,4 +1,5 @@
 
+import { randInt } from "/static/js/common/random.js";
 import Player from "../Player.js";
 import setWallpaper from "../wallpaper.js";
 import ThieveryPlayerViews from "./ThieveryPlayerViews.js";
@@ -44,24 +45,46 @@ class ThieveryPlayer extends Player {
         
         questionContainer.els(".answer-button").anim({
             opacity: [0, 1],
-            scale: [0.9, 1],
-            translateY: [200, 0],
+            scaleX: [0.9, 1],
+            scaleY: [1.2, 1],
+            translateY: [200, -10],
             brightness: [0.8, 1],
+            rotate: [randInt(-10, 10), 0],
             easing: "ease-out",
-            duration: 180,
+            duration: 300,
             delayBetween: 30
         })
         
         this.socket.once("answer-result", (correct) => {
-            questionContainer.anim({
-                scale: [1, 0.8],
-                translateY: [0, 20],
-                brightness: [1, 0.8],
-                opacity: [1, 0],
-                easing: "ease-in",
-                duration: 200
-            }).onfinish(() => questionContainer.remove());
-            console.log(correct ? "correct" : "incorrect");
+            
+            let animEl = doc.el("#game")
+                .crel("div").addc(correct ? "correct-animation" : "incorrect-animation");
+            
+            setTimeout(() => animEl.remove(), 1000);
+            
+            this.playSound(correct ? "player/correct.wav" : "player/incorrect.wav")
+            
+            if(!correct) {
+                questionContainer.anim({
+                    //translateX: [0, -10, 10, -8, 8, -5, 5, -2, 2, 0 ],
+                    translateY: [0, 80],
+                    rotate:     [0, randInt(-30, 30)],
+                    brightness: [1, 0.2],
+                    opacity: [1, 0],
+                    easing: "ease-out",
+                    duration: 1000
+                }).onfinish(() => questionContainer.remove());
+            } else {
+                questionContainer.anim({
+                    scale: [1, 0.8],
+                    translateY: [0, 20],
+                    brightness: [1, 0.8],
+                    opacity: [1, 0],
+                    easing: "ease-in",
+                    duration: 200
+                }).onfinish(() => questionContainer.remove());
+            }
+            
         });
     }
     

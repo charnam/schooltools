@@ -22,6 +22,8 @@
             ready.then(async () => {
                 const query = new URLSearchParams(window.location.search);
                 const client = new ThieveryPlayer();
+                if(query.get("debug"))
+                    window._debug_client = client;
             });
         </script>
     </body>

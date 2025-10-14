@@ -6,13 +6,39 @@ const { randArr, randInt } = require("../../common/random.js");
 class ThieveryPlayer extends Player {
     
     showingQuestion = false;
+    
     penaltyQuestions = 0;
     answeredQuestions = 0;
+    totalAnswered = 0; // Total questions answered, disregarding any penalties
+    streak = 0;
+    answeredResults = []; // Array used to generate accuracy
+    
+    get info() {
+        return {
+            username: this.username,
+            penaltyQuestions: this.penaltyQuestions,
+            answeredQuestions: this.answeredQuestions,
+            streak: this.streak,
+            accuracy: this.accuracy
+        }
+    }
+    
+    get accuracy() {
+        return this.answeredResults.reduce((a,b) => a + b, 0) / this.answeredResults.length;
+    }
+    
+    sendStateInfo() {
+        this.socket.emit("state", {
+            self: this.info,
+            game: this.game.info
+        });
+    }
     
     addPenaltyQuestions(count) {
         this.penaltyQuestions += count;
         this.socket.emit("add-penalty-questions", count);
         this.socket.emit("penalty-questions", this.penaltyQuestions);
+        this.game.emit("update");
     }
 
     askSpecificQuestion(details) {
@@ -33,14 +59,24 @@ class ThieveryPlayer extends Player {
 
         this.socket.once("answer", value => {
             this.showingQuestion = false;
+            
             if(correctAnswer == value) {
                 this.socket.emit("answer-result", true);
+                
+                if(this.penaltyQuestions > 0)
+                    this.penaltyQuestions--;
+                else
+                    this.answeredQuestions++;
+                this.totalAnswered++;
+                
                 this.game.emit("update");
+                
                 this.askQuestion();
             } else {
                 this.socket.emit("answer-result", false);
+                
                 this.addPenaltyQuestions(3);
-                this.game.emit("update");
+                
                 this.askQuestion();
             }
         });
@@ -53,7 +89,7 @@ class ThieveryPlayer extends Player {
         if(answerWith == "both")
             answerWith = randInt(0, 1) ? "definition" : "hint";
         
-        // askWith: inverse of answerWith
+        // The askWith variable is inverse of answerWith
         const askWith = answerWith == "definition" ? "hint" : "definition";
         
         const question = {

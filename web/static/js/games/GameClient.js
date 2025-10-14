@@ -5,6 +5,7 @@ class GameClient {
     
     socket = null;
     currentState = {}; // temporary values would go here
+    playingSounds = {};
     
     Views = DefaultViews;
     
@@ -16,12 +17,37 @@ class GameClient {
         }
     }
     
+    createSound(filename) {
+        let aud = new Audio();
+        aud.src = "/static/audio/live/"+filename;
+        return aud;
+    }
+    
+    playSound(filename, id = null) {
+        return new Promise(res => {
+            let aud = this.createSound(filename);
+            aud.autoplay = true;
+            
+            if(id !== null)
+                this.playingSounds[id] = aud;
+            
+            aud.onended = () => {
+                if(this.playingSounds[id] == aud)
+                    delete this.playingSounds[id];
+                
+                aud.remove();
+                
+                res();
+            }
+        })
+    }
+    
+    
     prepareView(id) {
         if(!doc.el("#view-wrapper > #"+id)) {
             doc.el("#view-wrapper")
                 .crel("div")
-                    .attr("id", id)
-                    .addc("visible");
+                    .attr("id", id);
             
             if(typeof this.Views[id] == "function") {
                 this.Views[id](this);

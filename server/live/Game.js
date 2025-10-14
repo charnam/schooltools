@@ -74,14 +74,14 @@ class Game extends EventEmitter {
         this.state = "game";
     }
     
-    constructor() {
+    constructor(namespace) {
         super();
         
         this.id = mkid();
         this.joincode = Math.floor(Math.random() * 899999 + 100000);
         this.moderationKey = mkid();
 
-        this.toClients = io.of("/games/thievery").to(this.id);
+        this.toClients = io.of(namespace).to(this.id);
         
         this.toPlayers = this.toClients.to("players");
         this.toSpectators = this.toClients.to("spectators");

@@ -1,6 +1,76 @@
 import GameClient from "./GameClient.js";
+import Playlist from "./Playlist.js";
+import { randArr } from "/static/js/common/random.js";
 
 class Spectator extends GameClient {
+    
+    playlist = Playlist;
+    
+    async playMusic(filename, title, creator) {
+        
+        const nowPlaying =
+            doc.el("body")
+                .crel("div").addc("now-playing").attr("style", "opacity: 0;")
+                    .crel("span")
+                        .txt("Now Playing: ")
+                    .prnt()
+                    .crel("b")
+                        .txt(title)
+                    .prnt()
+                    .crel("span")
+                        .txt(creator ? " by " : "")
+                    .prnt()
+                    .crel("b")
+                        .txt(creator ?? "")
+                    .prnt();
+        
+        (async () => {
+            
+            while(this.view == "counting_down") {
+                await new Promise(res => 
+                    setTimeout(res, 300)
+                );
+            }
+            
+            await nowPlaying.animAsync({
+                opacity: [0, 1],
+                translateY: [-50, 0],
+                duration: 800,
+                easing: "ease-out"
+            });
+            
+            await new Promise(res => setTimeout(res, 3000))
+            
+            
+            await nowPlaying.animAsync({
+                opacity: [1, 0],
+                translateY: [0, -50],
+                duration: 800,
+                easing: "ease-in"
+            });
+            
+            nowPlaying.remove();
+            
+        })();
+        
+        
+        await this.playSound(filename, "music");
+        
+    }
+    
+    async playRandomMusic(options = {}) {
+        
+        let availableMusic = this.playlist;
+        
+        if(options.first)
+            availableMusic = availableMusic.filter(song => song.playsFirst);
+        
+        const song = randArr(availableMusic);
+        
+        await this.playMusic(song.filename, song.title, song.creator);
+        
+    }
+    
     constructor(namespace, args) {
         const params = new URLSearchParams(window.location.search);
 
@@ -13,14 +83,20 @@ class Spectator extends GameClient {
         this.socket.on("moderator", () => {
             this.isModerator = true;
             doc.el("body").addc("moderator");
+            
+            this.prepareView("pregame");
             doc.el("#startgame").on("click", () => this.socket.emit("startgame"));
         });
         
         this.socket.on("joincode", code => {
+            this.prepareView("pregame");
+            
             doc.el("#joincode").html("").txt(code);
         });
         
         this.socket.on("players", players => {
+            this.prepareView("pregame");
+            
             doc.el("#pregame-header-players").html("")
                 .txt(players.length + " player"+(players.length == 1 ? "" : "s"));
             
@@ -57,6 +133,7 @@ class Spectator extends GameClient {
             
             for(let oldPlayer of doc.els("#pregame-players-list .player")) {
                 if(
+                    this.currentState.current_pregame_players &&
                     this.currentState.current_pregame_players.some(player => player.id == oldPlayer.attr("playerid")) &&
                     !players.some(player => player.id == oldPlayer.attr("playerid"))
                 )
@@ -68,7 +145,23 @@ class Spectator extends GameClient {
             }
             
             this.currentState.current_pregame_players = players;
-        })
+        });
+        
+        (async () => {
+            while(true) {
+                while(this.view == "game" || this.view == "counting_down") {
+                    
+                    await this.playRandomMusic({
+                        first: this.view == "counting_down"
+                    });
+                    
+                }
+                
+                await new Promise(res => {
+                    setTimeout(res, 100);
+                })
+            }
+        })();
     }
 }
 

@@ -80,3 +80,17 @@
     text-decoration: line-through;
     cursor: pointer;
 }
+
+.now-playing {
+    font-size: 4vmin;
+    padding: 2vmin;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100vw;
+    text-align: center;
+    box-sizing: border-box;
+    text-shadow: 0 0.2vmin 1vmin var(--text-shadow);
+    color: #000b;
+}

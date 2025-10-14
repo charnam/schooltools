@@ -2,12 +2,35 @@
 @import url("../player.css");
 @import url("../common-dark.css");
 
+@keyframes flashOff {
+    0% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+#game .correct-animation {
+    opacity: 0;
+    animation: flashOff 0.5s ease-out;
+    background: radial-gradient(#0c3, #060);
+    inset: 0;
+    position: fixed;
+    pointer-events: none;
+    z-index: -2;
+}
 
 #game .question {
     position: fixed;
     inset: 20px;
     display: flex;
     flex-direction: column;
+    z-index: 0;
+}
+
+#game .question.waiting {
+    pointer-events: none;
 }
 
 #game .question-text,
@@ -36,12 +59,15 @@
 	color: white;
 	border: 1px solid #fff;
 	text-shadow: 0 0.5vmin 0.7vmin var(--text-shadow);
-	transition:
-        0.1s ease-in-out transform,
-        0.05s ease-in-out background-color;
+	transition: 0.1s ease-in-out transform;
 	box-shadow: 0 1vmin 1vmin #0002;
+    font-family: inherit;
+    cursor: pointer;
 }
 #game .question .answer-button:hover {
     /*transform: scale(1.02);*/
     background-color: #fff3;
+}
+#game .question .answer-button:active {
+    transform: scale(0.7) !important;
 }

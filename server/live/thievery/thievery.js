@@ -1,7 +1,7 @@
 
 const { error, success } = require("../../common/states.js");
 const { getSet } = require("../../common/sets.js");
-const register_live = require("../register-live.js");
+const register_live = require("../../common/register-live.js");
 const register = require("../../routes/register-routes.js");
 const ThieveryGame = require("./ThieveryGame.js");
 const ThieveryPlayer = require("./ThieveryPlayer.js");
@@ -123,7 +123,7 @@ register({
                         gameArgs.damage = "disabled";
                     
                     const set = await getSet({id: body.set});
-                    if(!set)
+                    if(set.type == "error")
                         return error("Provided set does not exist or is not public");
                     
                     if(set.terms.length < 4)

@@ -18,6 +18,7 @@
     border-radius: 10px;
     padding: 8px;
     font-size: 30px;
+    font-family: inherit;
 }
 
 #view-wrapper .entry-input:not(:valid) {

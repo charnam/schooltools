@@ -143,10 +143,9 @@
                 doc.el("form").on("change", evt => {
                     doc.el("#preset").value = "custom";
                 });
+                const locationSearch = new URLSearchParams(window.location.search);
                 
-                doc.el("#setid").value =
-                    new URLSearchParams(window.location.search)
-                        .get("id");
+                doc.el("#setid").value = locationSearch.get("id");
                 
                 handleForm(async (formData) => {
                     const result = await api("games/thievery/create", formData);
@@ -159,6 +158,8 @@
                     
                     return result;
                 })
+                if(locationSearch.get("quickly") == "yes")
+                    doc.el("input[type='submit']").click();
             })
             
         </script>
