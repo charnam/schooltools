@@ -93,6 +93,7 @@ class ThieveryPlayer extends Player {
         
         setWallpaper("thievery-player.glsl");
         
+        this.socket.on("state", console.log);
         this.socket.on("question", question => this.askQuestion(question));
     }
 }

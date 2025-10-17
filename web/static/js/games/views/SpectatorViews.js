@@ -2,6 +2,11 @@ import DefaultViews from "./DefaultViews.js";
 
 class SpectatorViews extends DefaultViews {
     
+    static game() {
+        
+        
+    }
+    
     static pregame() {
         doc.el("#pregame")
             .crel("div").attr("id", "pregame-sidebar")

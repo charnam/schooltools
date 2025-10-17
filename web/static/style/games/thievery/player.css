@@ -55,10 +55,13 @@
     font-size: 8vmin;
     text-shadow: 0 1vmin 1.2vmin var(--text-shadow);
     text-align: center;
+    overflow-y: auto;
+    word-break: break-word;
 }
 #game .question-buttons {
     display: grid;
     grid-template-columns: 50% 50%;
+    grid-template-rows: 50% 50%;
 }
 #game .question .answer-button {
 	margin: 10px;
@@ -72,9 +75,12 @@
 	box-shadow: 0 1vmin 1vmin #0002;
     font-family: inherit;
     cursor: pointer;
+    box-sizing: border-box;
+    padding: 10px;
+    overflow-y: auto;
+    word-break: break-word;
 }
 #game .question .answer-button:hover {
-    /*transform: scale(1.02);*/
     background-color: #fff3;
 }
 #game .question .answer-button:active {

@@ -2,11 +2,70 @@
 @import url("../leaderboard.css");
 @import url("../common-light.css");
 
-
-#pregame-sidebar {
+.bar-chart {
     
+    --xaxis-width: 10vmin;
+    --yaxis-height: 10vmin;
+    
+    --target-bars-width: 80vmin;
+    --bars-height: 50vmin;
+    
+    --minimum-bar-width: 8vmin;
+    
+    --bars-width: max(var(--target-bars-width), calc(var(--participants) * var(--minimum-bar-width)));
+    
+    --target-chart-width: calc(var(--target-bars-width) + var(--xaxis-width));
+    
+    --chart-width: calc(var(--bars-width) + var(--xaxis-width));
+    --chart-height: calc(var(--bars-height) + var(--yaxis-height));
+    
+    --one-horizontal-grid-space: calc(var(--bars-width) / var(--participants));
+    --one-vertical-grid-space: calc(var(--bars-height) / var(--max-value));
+    
+    position: fixed;
+    
+    display: grid;
+    grid-template-columns: var(--xaxis-width) var(--bars-width);
+    grid-template-areas:
+        "y-axis bars  "
+        ".      x-axis";
+    grid-template-rows: var(--bars-height) var(--yaxis-height);
+    
+    left: calc((100vw - var(--target-chart-width)) / 2);
+    top: calc((100vh - var(--chart-height)) / 2);
+    width: var(--chart-width);
+    height: var(--chart-height);
+}
+.bar-chart .bars {
+    grid-area: bars;
+    display: flex;
+    position: relative;
+    align-items: flex-end;
+    flex: none;
+}
+.bar-chart .x-axis {
+    grid-area: x-axis;
+    border-top: 3px solid black;
+}
+.bar-chart .y-axis {
+    grid-area: y-axis;
+    border-right: 3px solid black;
 }
 
-#pregame-players-list {
-    
+.bar-chart .bar {
+    width: var(--one-horizontal-grid-space);
+    height: calc(var(--one-vertical-grid-space) * var(--value));
+    order: calc(0 - var(--value));
+    flex: none;
+    margin-left: 10px;
+    background: linear-gradient(to bottom, #39ab5f, #25703e);
+    border-radius: 5px 5px 0 0;
+    order: calc(0 - var(--value));
+}
+
+.bar-chart .target-line {
+    position: absolute;
+    width: var(--bars-width);
+    border-bottom: 2px solid #0004;
+    bottom: calc(var(--target-value) * var(--one-vertical-grid-space));
 }
