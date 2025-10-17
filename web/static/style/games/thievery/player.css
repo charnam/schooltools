@@ -20,6 +20,15 @@
     pointer-events: none;
     z-index: -2;
 }
+#game .incorrect-animation {
+    opacity: 0;
+    animation: flashOff 1s ease-out;
+    background: radial-gradient(#c00c, #900);
+    inset: 0;
+    position: fixed;
+    pointer-events: none;
+    z-index: -2;
+}
 
 #game .question {
     position: fixed;

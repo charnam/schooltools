@@ -11,17 +11,16 @@ class Spectator extends GameClient {
         const nowPlaying =
             doc.el("body")
                 .crel("div").addc("now-playing").attr("style", "opacity: 0;")
+                    .crel("img").addc("notes").attr("src", "/static/imports/bootstrap-icons/music-note-beamed.svg").prnt()
                     .crel("span")
                         .txt("Now Playing: ")
-                    .prnt()
-                    .crel("b")
-                        .txt(title)
-                    .prnt()
-                    .crel("span")
+                        .crel("b")
+                            .txt(title)
+                        .prnt()
                         .txt(creator ? " by " : "")
-                    .prnt()
-                    .crel("b")
-                        .txt(creator ?? "")
+                        .crel("b")
+                            .txt(creator ?? "")
+                        .prnt()
                     .prnt();
         
         (async () => {

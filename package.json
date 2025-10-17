@@ -20,6 +20,7 @@
   "dependencies": {
     "ansi-regex": "^6.2.0",
     "bcrypt": "^6.0.0",
+    "bootstrap-icons": "^1.13.1",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "glslCanvas": "^0.2.6",

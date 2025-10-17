@@ -87,10 +87,41 @@
     position: fixed;
     left: 0;
     top: 0;
-    display: block;
+    display: flex;
     width: 100vw;
     text-align: center;
     box-sizing: border-box;
-    text-shadow: 0 0.2vmin 1vmin var(--text-shadow);
+    filter: drop-shadow(0 0.2vmin 0.3vmin var(--text-shadow));
     color: #000b;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes notes-wobble {
+    0% {
+    }
+    
+    50% {
+        transform: rotate(0);
+    }
+    60% {
+        transform: rotate(20deg);
+    }
+    70% {
+        transform: rotate(-10deg);
+    }
+    80% {
+        transform: rotate(5deg);
+    }
+    100% {
+        transform: rotate(0);
+    }
+}
+
+.now-playing img.notes {
+    height: 3vmin;
+    aspect-ratio: 1 / 1;
+    margin-right: 20px;
+    display: inline;
+    animation: notes-wobble 2s ease-in-out infinite;
 }

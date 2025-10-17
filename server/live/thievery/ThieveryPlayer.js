@@ -65,17 +65,22 @@ class ThieveryPlayer extends Player {
                 
                 if(this.penaltyQuestions > 0)
                     this.penaltyQuestions--;
-                else
+                else {
                     this.answeredQuestions++;
+                    this.streak++;
+                }
                 this.totalAnswered++;
                 
-                this.game.emit("update");
+                this.game.emit("spectator-update");
+                this.sendStateInfo();
                 
                 this.askQuestion();
             } else {
                 this.socket.emit("answer-result", false);
                 
                 this.addPenaltyQuestions(3);
+                this.game.emit("spectator-update");
+                this.sendStateInfo();
                 
                 this.askQuestion();
             }
