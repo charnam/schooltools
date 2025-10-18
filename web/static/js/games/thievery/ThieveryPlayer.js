@@ -93,7 +93,26 @@ class ThieveryPlayer extends Player {
         
         setWallpaper("thievery-player.glsl");
         
-        this.socket.on("state", console.log);
+        this.socket.on("state", state => {
+            this.prepareView("game");
+            
+            if(state.game.endAt.type == "questions") {
+                const questionsLeft = Number(state.game.endAt.value);
+                
+                if(questionsLeft > 0)
+                    doc.el("#stats-bar .right-info")
+                        .html("")
+                            .txt(
+                                `${questionsLeft} question${questionsLeft == 1 ? "" : "s"} to goal`
+                            )
+                else
+                    doc.el("#stats-bar.right-info")
+                        .html("")
+                            .txt(
+                                `Goal reached!`
+                            )
+            }
+        });
         this.socket.on("question", question => this.askQuestion(question));
     }
 }

@@ -10,25 +10,37 @@ class ThieverySpectator extends Spectator {
         let bar = document.getElementsByName(name)[0];
         
         if(!bar) {
-            bar = chart.el(".bars").crel("div").addc("bar").attr("name", name)
+            bar = chart.el(".bars")
+                .crel("div").addc("bar").attr("name", name)
+                    .crel("div").addc("penalty-questions").prnt();
         }
         
         if(!bar.classList.contains("bar")) {
             throw new Error("Bar / player name conflicts with another named element on the page.");
         }
         
-        bar.attr("style", "--value: "+value+"; --penaltyQuestions: ");
+        if(bar.el(".penalty-questions").attr("penaltyQuestions") < penalties) {
+            bar.anim({
+                translateX: [-10, 10, -8, 8, -5, 5, 0],
+                easing: "ease-out",
+                duration: 500
+            });
+        }
+        
+        bar
+            .attr("value", value)
+            .attr("style", `
+                --value: ${value};
+                --penaltyQuestions: ${penalties};
+            `)
+            .el(".penalty-questions")
+                .attr("penaltyQuestions", penalties);
+            
     }
     
-    updateBarChart() {
+    updateBarChart(state) {
         
-    }
-    
-    renderBarChart() {
-        const targetValue = 10;
-        const participants = 20;
-        
-        const maxValue = Math.max(targetValue, participants)
+        console.log(state);
         
         if(!doc.el("#game .bar-chart")) {
             doc.el("#game")
@@ -37,16 +49,28 @@ class ThieverySpectator extends Spectator {
                     .crel("div").addc("x-axis").prnt()
                     
                     .crel("div").addc("bars")
-                        .crel("div").addc("target-line")
-                            .txt(targetValue)
-                        .prnt()
+                        .crel("div").addc("target-line").prnt()
                     .prnt();
         }
         
-        doc.el("#game .bar-chart").attr("style", "--target-value: "+targetValue+"; --max-value: "+maxValue+"; --participants: "+participants+";");
+        const targetValue = state.game.endAt.value;
+        const participants = state.players.length;
         
-        for(let i = 0; i < participants; i++) {
-            this.updateBar(Math.random(), i);
+        const highScore = Math.max(...state.players.map(player => player.answeredQuestions));
+        
+        const maxValue = Math.max(targetValue, highScore);
+        
+        doc.el("#game .bar-chart").attr("style", `
+                --target-value: ${targetValue};
+                --max-value: ${maxValue};
+                --participants: ${participants};
+            `)
+            .el(".target-line")
+                .html("").txt(targetValue)
+            .prnt();
+        
+        for(let player of state.players) {
+            this.updateBar(player.username, player.answeredQuestions, player.penaltyQuestions);
         }
         
     }
@@ -55,6 +79,12 @@ class ThieverySpectator extends Spectator {
         super("/games/thievery", args);
         
         setWallpaper("thievery-leaderboard.glsl");
+        
+        this.socket.on("state", (state) => {
+            
+            this.updateBarChart(state);
+            
+        })
     }
 }
 

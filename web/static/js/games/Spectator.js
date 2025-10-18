@@ -61,8 +61,7 @@ class Spectator extends GameClient {
         
         let availableMusic = this.playlist;
         
-        if(options.first)
-            availableMusic = availableMusic.filter(song => song.playsFirst);
+        availableMusic = availableMusic.filter(song => !song.playsFirst == !options.first);
         
         const song = randArr(availableMusic);
         

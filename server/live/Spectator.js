@@ -1,18 +1,19 @@
 const GameClient = require("./GameClient.js");
 
-function mapPlayer(player) {
-    return {
-        username: player.username,
-        id: player.id
-    };
-}
 
 class Spectator extends GameClient {
     isModerator = false
     
+    static mapPlayerPregame(player) {
+        return {
+            username: player.username,
+            id: player.id
+        };
+    }
+    
     updatePlayersPregame() {
         this.socket.emit("players",
-            Object.values(this.game.players).map(mapPlayer)
+            Object.values(this.game.players).map(Spectator.mapPlayerPregame)
         );
     }
 

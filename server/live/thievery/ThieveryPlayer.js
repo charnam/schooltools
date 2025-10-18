@@ -71,7 +71,7 @@ class ThieveryPlayer extends Player {
                 }
                 this.totalAnswered++;
                 
-                this.game.emit("spectator-update");
+                this.game.emit("update");
                 this.sendStateInfo();
                 
                 this.askQuestion();
@@ -79,7 +79,7 @@ class ThieveryPlayer extends Player {
                 this.socket.emit("answer-result", false);
                 
                 this.addPenaltyQuestions(3);
-                this.game.emit("spectator-update");
+                this.game.emit("update");
                 this.sendStateInfo();
                 
                 this.askQuestion();

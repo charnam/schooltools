@@ -7,10 +7,12 @@
     --xaxis-width: 10vmin;
     --yaxis-height: 10vmin;
     
-    --target-bars-width: 80vmin;
-    --bars-height: 50vmin;
+    --target-bars-width: max(80vmin, 60vw);
+    --bars-height: 70vmin;
     
     --minimum-bar-width: 8vmin;
+    
+    --bar-margin: 1vmin;
     
     --bars-width: max(var(--target-bars-width), calc(var(--participants) * var(--minimum-bar-width)));
     
@@ -19,7 +21,7 @@
     --chart-width: calc(var(--bars-width) + var(--xaxis-width));
     --chart-height: calc(var(--bars-height) + var(--yaxis-height));
     
-    --one-horizontal-grid-space: calc(var(--bars-width) / var(--participants));
+    --one-horizontal-grid-space: min(30vmin, calc(var(--bars-width) / var(--participants)));
     --one-vertical-grid-space: calc(var(--bars-height) / var(--max-value));
     
     position: fixed;
@@ -43,29 +45,123 @@
     align-items: flex-end;
     flex: none;
 }
+
 .bar-chart .x-axis {
     grid-area: x-axis;
-    border-top: 3px solid black;
+    border-top: 0.5vmin solid black;
 }
 .bar-chart .y-axis {
     grid-area: y-axis;
-    border-right: 3px solid black;
-}
-
-.bar-chart .bar {
-    width: var(--one-horizontal-grid-space);
-    height: calc(var(--one-vertical-grid-space) * var(--value));
-    order: calc(0 - var(--value));
-    flex: none;
-    margin-left: 10px;
-    background: linear-gradient(to bottom, #39ab5f, #25703e);
-    border-radius: 5px 5px 0 0;
-    order: calc(0 - var(--value));
+    border-right: 0.5vmin solid black;
 }
 
 .bar-chart .target-line {
     position: absolute;
-    width: var(--bars-width);
-    border-bottom: 2px solid #0004;
+    width: var(--chart-width);
+    
+    left: calc(0px - var(--xaxis-width));
     bottom: calc(var(--target-value) * var(--one-vertical-grid-space));
+    
+    border-bottom: 0.2vmin solid #0004;
+    font-size: 5vmin;
+    
+    display: flex;
+    flex-direction: column;
+    transition: bottom 0.5s ease-out;
+}
+
+.bar-chart .target-line:before {
+    content: "Goal: ";
+    font-size: 2vmin;
+}
+
+.bar-chart .bar {
+    font-size: 0; /* to prevent blank margin before digits */
+    
+    width: calc(var(--one-horizontal-grid-space) - var(--bar-margin));
+    height: calc(var(--one-vertical-grid-space) * var(--value));
+    order: calc(0 - var(--value));
+    flex: none;
+    margin-left: var(--bar-margin);
+    background: linear-gradient(to bottom, #39ab5f, #25703e);
+    border-radius: 2vmin 2vmin 0 0;
+    order: calc(0 - var(--value));
+    position: relative;
+    
+    --vertical-text-margin: 0.5vmin;
+    --max-font-size: calc(var(--one-horizontal-grid-space) / 3);
+    
+    transition: 0.5s ease-out;
+    transition-property: order, height;
+    
+    box-shadow: 0.5vmin 0.5vmin 1vmin var(--text-shadow);
+}
+
+.bar-chart .bar .penalty-questions {
+    width: 100%;
+    height: calc(var(--penaltyQuestions) * var(--one-vertical-grid-space));
+    background: linear-gradient(to bottom, #c00e, #c000 46vmin);
+    border-radius: inherit;
+    transition: height 0.5s ease-out;
+}
+
+.bar-chart .bar .penalty-questions:after {
+    content: attr(penaltyquestions);
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+    padding: var(--vertical-text-margin);
+    box-sizing: border-box;
+    font-size: min(
+        var(--max-font-size),
+        calc(
+            var(--penaltyQuestions) * var(--one-vertical-grid-space) - (var(--vertical-text-margin) * 2)
+        )
+    );
+    transition: font-size 0.5s ease-out;
+}
+
+.bar-chart .bar:after {
+    content: attr(value);
+    color: white;
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    --vertical-room: calc(var(--value) - var(--penaltyQuestions));
+    font-size: max(
+        0vmin,
+        min(
+            calc(
+                var(--vertical-room) * var(--one-vertical-grid-space) - (var(--vertical-text-margin) * 2)
+            ),
+            var(--max-font-size)
+        )
+    );
+    transition: font-size 0.5s ease-out;
+    font-style: italic;
+}
+
+.bar-chart .bar:before {
+    content: attr(name);
+    position: absolute;
+    color: var(--text);
+    font-size: calc(var(--one-horizontal-grid-space) / 5);
+    text-align: right;
+    top: calc(100% + 7vmin);
+    transform: rotate(-25deg);
+}
+.bar-chart .bar:before {
+    content: attr(name);
+    position: absolute;
+    color: var(--text);
+    font-size: calc(var(--one-horizontal-grid-space) / 5);
+    text-align: right;
+    top: calc(100% + 1vmin);
+    transform: rotate(-20deg);
+    right: 50%;
+    transform-origin: right;
 }

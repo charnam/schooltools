@@ -11,6 +11,49 @@
     }
 }
 
+#game {
+    --stats-bar-height: 10vmin;
+}
+
+#game #stats-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 2vmin;
+    box-sizing: border-box;
+    text-shadow: 0 0.5vmin 1vmin var(--text-shadow);
+    font-weight: 600;
+    height: var(--stats-bar-height);
+    align-items: center;
+}
+
+
+.streak-bars {
+    display: flex;
+    border: 0.5vmin solid #0055aa;
+    border-radius: var(--streak-bar-radius);
+    --streak-bar-radius: 1vmin;
+}
+
+.streak-bar {
+    width: 4vmin;
+    height: 6vmin;
+    border-right: 0.4vmin solid #0002;
+    background: linear-gradient(to bottom, #00ccff, #0088cc, #0055aa);
+}
+
+.streak-bar:first-child {
+    border-top-left-radius: var(--streak-bar-radius);
+    border-bottom-left-radius: var(--streak-bar-radius);
+}
+
+.streak-bar:last-child {
+    border-top-right-radius: var(--streak-bar-radius);
+    border-bottom-right-radius: var(--streak-bar-radius);
+    border-right: none;
+}
+
+
+
 #game .correct-animation {
     opacity: 0;
     animation: flashOff 0.5s ease-out;
@@ -33,6 +76,7 @@
 #game .question {
     position: fixed;
     inset: 20px;
+    top: var(--stats-bar-height);
     display: flex;
     flex-direction: column;
     z-index: 0;

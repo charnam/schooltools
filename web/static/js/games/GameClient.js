@@ -100,8 +100,6 @@ class GameClient {
             ...args
         };
         
-        this.prepareView("game");
-        
         this.socket = io(
             namespace,
             {
