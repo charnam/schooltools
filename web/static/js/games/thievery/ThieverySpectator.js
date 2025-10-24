@@ -5,7 +5,7 @@ import ThieverySpectatorViews from "./ThieverySpectatorViews.js";
 class ThieverySpectator extends Spectator {
     Views = ThieverySpectatorViews;
     
-    updateBar(name, value, penalties) {
+    updateBar(name, value, penalties, rank) {
         const chart = doc.el("#game .bar-chart");
         let bar = document.getElementsByName(name)[0];
         
@@ -26,10 +26,18 @@ class ThieverySpectator extends Spectator {
                 duration: 500
             });
         }
+        if(bar.attr("value") < value) {
+            bar.anim({
+                brightness: [1.2, 1],
+                easing: "ease-out",
+                duration: 300
+            });
+        }
         
         bar
             .attr("value", value)
             .attr("style", `
+                --rank: ${rank};
                 --value: ${value};
                 --penaltyQuestions: ${penalties};
             `)
@@ -40,7 +48,7 @@ class ThieverySpectator extends Spectator {
     
     updateBarChart(state) {
         
-        console.log(state);
+        this.prepareView("game");
         
         if(!doc.el("#game .bar-chart")) {
             doc.el("#game")
@@ -69,8 +77,9 @@ class ThieverySpectator extends Spectator {
                 .html("").txt(targetValue)
             .prnt();
         
-        for(let player of state.players) {
-            this.updateBar(player.username, player.answeredQuestions, player.penaltyQuestions);
+        for(let rank in state.players) {
+            const player = state.players[rank];
+            this.updateBar(player.username, player.answeredQuestions, player.penaltyQuestions, rank);
         }
         
     }

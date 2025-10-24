@@ -65,10 +65,8 @@ class GameClient {
             this.prepareView(value);
             newView = doc.el("#"+value)
             newView.scrollWidth;
-            setTimeout(() => {
-                this.hideCurrentView();
-                newView.addc("visible")
-            }, 10);
+            this.hideCurrentView();
+            newView.addc("visible")
         }
     }
     

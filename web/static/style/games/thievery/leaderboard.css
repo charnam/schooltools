@@ -80,19 +80,18 @@
     
     width: calc(var(--one-horizontal-grid-space) - var(--bar-margin));
     height: calc(var(--one-vertical-grid-space) * var(--value));
-    order: calc(0 - var(--value));
     flex: none;
     margin-left: var(--bar-margin);
     background: linear-gradient(to bottom, #39ab5f, #25703e);
     border-radius: 2vmin 2vmin 0 0;
-    order: calc(0 - var(--value));
-    position: relative;
+    position: absolute;
+    
+    left: calc(var(--rank) * var(--one-horizontal-grid-space));
     
     --vertical-text-margin: 0.5vmin;
     --max-font-size: calc(var(--one-horizontal-grid-space) / 3);
     
-    transition: 0.5s ease-out;
-    transition-property: order, height;
+    transition: height 0.5s ease-out, left 0.5s ease-out;
     
     box-shadow: 0.5vmin 0.5vmin 1vmin var(--text-shadow);
 }
@@ -103,6 +102,8 @@
     background: linear-gradient(to bottom, #c00e, #c000 46vmin);
     border-radius: inherit;
     transition: height 0.5s ease-out;
+    position: relative;
+    z-index: 10;
 }
 
 .bar-chart .bar .penalty-questions:after {

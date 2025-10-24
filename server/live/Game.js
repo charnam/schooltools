@@ -34,7 +34,7 @@ class Game extends EventEmitter {
     addPlayer(player) {
         this.players[player.id] = player;
         player.socket.join(this.id);
-        player.socket.join("players");
+        player.socket.join(this.id + "-players");
         this.handleNewPlayer(player);
         
         if(this.state == "pregame")
@@ -46,7 +46,7 @@ class Game extends EventEmitter {
     addSpectator(spectator) {
         this.spectators.push(spectator);
         spectator.socket.join(this.id);
-        spectator.socket.join("spectators");
+        spectator.socket.join(this.id + "-spectators");
         this.handleNewSpectator(spectator);
         return spectator
     }
@@ -82,9 +82,8 @@ class Game extends EventEmitter {
         this.moderationKey = mkid();
 
         this.toClients = io.of(namespace).to(this.id);
-        
-        this.toPlayers = this.toClients.to("players");
-        this.toSpectators = this.toClients.to("spectators");
+        this.toPlayers = io.of(namespace).to(this.id + "-players");
+        this.toSpectators = io.of(namespace).to(this.id + "-spectators");
         
         
         this.on("started", () => {

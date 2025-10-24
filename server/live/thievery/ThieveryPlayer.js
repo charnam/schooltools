@@ -13,11 +13,36 @@ class ThieveryPlayer extends Player {
     streak = 0;
     answeredResults = []; // Array used to generate accuracy
     
+    get rank() {
+        return this.game.rankedPlayers.indexOf(this) + 1;
+    }
+    
+    get goalCondition() {
+        if(this.game.gameArgs.endAt.type == "questions") {
+            if(this.answeredQuestions < this.game.gameArgs.endAt.value)
+                return `${Number(this.game.gameArgs.endAt.value) - this.answeredQuestions + this.penaltyQuestions} left to reach goal`;
+            
+            if(this.game.gameArgs.endAt.everyone)
+                return `Waiting on ${
+                            Object.values(this.game.players)
+                                .filter(player => player.answeredQuestions < this.gameArgs)
+                                .length
+                        } to reach goal`;
+            
+            return `Game should end soon`;
+        } else {
+            return "..."
+        }
+    }
+    
     get info() {
         return {
+            id: this.id,
+            rank: this.rank,
             username: this.username,
             penaltyQuestions: this.penaltyQuestions,
             answeredQuestions: this.answeredQuestions,
+            goalCondition: this.goalCondition,
             streak: this.streak,
             accuracy: this.accuracy
         }
@@ -63,6 +88,7 @@ class ThieveryPlayer extends Player {
             if(correctAnswer == value) {
                 this.socket.emit("answer-result", true);
                 
+                const oldRank = this.rank;
                 if(this.penaltyQuestions > 0)
                     this.penaltyQuestions--;
                 else {
@@ -74,9 +100,15 @@ class ThieveryPlayer extends Player {
                 this.game.emit("update");
                 this.sendStateInfo();
                 
+                if(this.rank > oldRank || this.rank < oldRank) {
+                    this.game.emit("update-players");
+                }
+                
                 this.askQuestion();
             } else {
                 this.socket.emit("answer-result", false);
+                
+                this.streak = 0;
                 
                 this.addPenaltyQuestions(3);
                 this.game.emit("update");
@@ -140,6 +172,8 @@ class ThieveryPlayer extends Player {
                 }
             }
         })
+        
+        this.game.on("update-players", () => this.sendStateInfo());
         
     }
 }
