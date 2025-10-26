@@ -1,0 +1,134 @@
+
+#damage-select {
+    --player-height: 9vmin;
+    
+    position: fixed;
+    inset: 0;
+    top: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #0009;
+    color: var(--text);
+    text-shadow: 0 2px 5px var(--text-shadow);
+    z-index: 1000;
+}
+
+@keyframes damageSelectFlashText {
+    0% {
+        opacity: 0.5;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+#damage-select:before {
+    content: "Send extra questions to whom?";
+    animation: damageSelectFlashText 1.9s ease-in-out infinite;
+    font-style: italic;
+    font-weight: 200;
+    font-size: 5vmin;
+    position: absolute;
+    right: 4vmin;
+    top: 5vmin;
+    text-shadow: 0 0.5vmin 1vmin var(--text-shadow);
+    z-index: 1000;
+}
+
+#damage-select .player {
+    --relativeY: calc((var(--rank) - var(--selected-player) - 1) * var(--player-height));
+    
+    display: grid;
+    grid-template-columns: 20vw 8vmin 20vmin 8vmin 100%;
+    align-items: center;
+    font-size: 3vmin;
+    position: absolute;
+    height: var(--player-height);
+    transition:
+        top 0.3s ease-out,
+        transform 0.2s ease-in-out,
+        filter 0.2s ease-in-out;
+    top: calc(var(--relativeY) + 50vh - var(--player-height) / 2);
+}
+
+#damage-select .player.selected.keypress-clicked,
+#damage-select .player.selected:active {
+    transform: scale(0.8);
+    filter: brightness(0.8);
+}
+
+@keyframes damageSelectSelectionIndicator {
+    0% {
+        transform: translateX(0);
+        opacity: 0.5;
+    }
+    30% {
+        transform: translateX(2vmin);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 0.5;
+    }
+}
+
+#damage-select .player:before {
+    content: "";
+    display: inline-block;
+    border: calc(var(--player-height) / 4) solid transparent;
+    width: 0;
+    justify-self: right;
+    animation: damageSelectSelectionIndicator 1s ease-in-out infinite;
+    transition: border 0.1s ease-in-out;
+}
+#damage-select .player.selected:before {
+    border-left-color: yellow;
+}
+
+#damage-select .player-answered-value {
+    color: #3f883f;
+    font-weight: bold;
+    font-style: italic;
+}
+
+#damage-select .player-bar {
+    margin: 1vmin;
+    height: 4vmin;
+    background: linear-gradient(to bottom, #54b054, #195b19);
+    border-radius: 5px;
+    --max-bar-width: calc(100% - var(--margin) * 2);
+    width: calc(var(--max-bar-width) * (var(--answeredQuestions) / var(--maxQuestionsAnswered)));
+    --margin: 1vmin;
+    transition: width 0.2s ease-out;
+    box-shadow: 0 2px 5px var(--text-shadow), 0 3px 7px inset #fff5;
+    position: relative;
+}
+#damage-select .player-bar:after {
+    content: "";
+    background: linear-gradient(to bottom, #c229, #c00, #c229), linear-gradient(to left, #900, #500f 10vmin);
+    width: calc(100% / (var(--answeredQuestions) / var(--penaltyQuestions)));
+    height: 100%;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+    -webkit-mask-image: linear-gradient(-90deg, black, #0005 20vmin, #0000);
+    transition: width 0.1s ease-in-out;
+}
+
+#damage-select .player-penalty-value {
+    color: #c30000;
+    text-align: right;
+    font-style: italic;
+    font-weight: bold;
+}
+
+#damage-select .player-username {
+    font-style: italic;
+    font-size: 4vmin;
+}

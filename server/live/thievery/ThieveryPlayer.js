@@ -6,6 +6,7 @@ const { randArr, randInt } = require("../../common/random.js");
 class ThieveryPlayer extends Player {
     
     showingQuestion = false;
+    inDamageSelect = false;
     
     penaltyQuestions = 0;
     answeredQuestions = 0;
@@ -25,7 +26,7 @@ class ThieveryPlayer extends Player {
             if(this.game.gameArgs.endAt.everyone)
                 return `Waiting on ${
                             Object.values(this.game.players)
-                                .filter(player => player.answeredQuestions < this.gameArgs)
+                                .filter(player => player.answeredQuestions < this.gameArgs.endAt.value)
                                 .length
                         } to reach goal`;
             
@@ -35,6 +36,10 @@ class ThieveryPlayer extends Player {
         }
     }
     
+    get canSendDamage() {
+        return this.game.state == "game" && this.streak >= this.game.sendPenaltyMinimumStreak && !this.inDamageSelect;
+    }
+    
     get info() {
         return {
             id: this.id,
@@ -42,10 +47,21 @@ class ThieveryPlayer extends Player {
             username: this.username,
             penaltyQuestions: this.penaltyQuestions,
             answeredQuestions: this.answeredQuestions,
+            canSendDamage: this.canSendDamage,
             goalCondition: this.goalCondition,
             streak: this.streak,
-            accuracy: this.accuracy
-        }
+            accuracy: this.accuracy,
+            inDamageSelect: this.inDamageSelect
+        };
+    }
+    
+    get damageInfo() {
+        return {
+            rank: this.rank,
+            username: this.username,
+            penaltyQuestions: this.penaltyQuestions,
+            answeredQuestions: this.answeredQuestions
+        };
     }
     
     get accuracy() {
@@ -58,17 +74,32 @@ class ThieveryPlayer extends Player {
             game: this.game.info
         });
     }
+    sendDamageSelectInfo() {
+        this.socket.emit("damage-select-update", this.game.damageInfo);
+    }
     
     addPenaltyQuestions(count) {
         this.penaltyQuestions += count;
         this.socket.emit("add-penalty-questions", count);
         this.socket.emit("penalty-questions", this.penaltyQuestions);
         this.game.emit("update");
+        this.sendStateInfo();
+    }
+    
+    receiveTargetedDamage(sender, amount) {
+        this.addPenaltyQuestions(amount);
+        this.socket.emit("targeted-damage", {
+            sender: {
+                username: sender.username
+            },
+            amount
+        });
     }
 
     askSpecificQuestion(details) {
         
-        this.showingQuestion = true;
+        const questionId = Date.now();
+        this.showingQuestion = questionId;
         
         this.socket.emit("question", {
             question: details.question,
@@ -83,6 +114,8 @@ class ThieveryPlayer extends Player {
         }
 
         this.socket.once("answer", value => {
+            if(this.showingQuestion !== questionId) return;
+            
             this.showingQuestion = false;
             
             if(correctAnswer == value) {
@@ -107,13 +140,8 @@ class ThieveryPlayer extends Player {
                 this.askQuestion();
             } else {
                 this.socket.emit("answer-result", false);
-                
                 this.streak = 0;
-                
                 this.addPenaltyQuestions(3);
-                this.game.emit("update");
-                this.sendStateInfo();
-                
                 this.askQuestion();
             }
         });
@@ -163,17 +191,52 @@ class ThieveryPlayer extends Player {
         super(...args);
         
         this.game.on("statechange", () => {
-            if(this.game.state === "game")
+            if(this.game.state === "game") {
                 this.askQuestion();
-            else {
+                this.sendStateInfo();
+            } else {
                 if(this.showingQuestion) {
                     this.socket.emit("cancel-question");
                     this.showingQuestion = false;
                 }
+                if(this.inDamageSelect) {
+                    this.socket.emit("cancel-damage-select");
+                    this.inDamageSelect = false;
+                }
             }
-        })
+        });
         
         this.game.on("update-players", () => this.sendStateInfo());
+        
+        this.game.on("update", () => {
+            if(this.inDamageSelect) {
+                this.sendDamageSelectInfo();
+            }
+        });
+        
+        this.socket.on("use-streak", () => {
+            if(this.canSendDamage) {
+                this.streak -= 3;
+                this.showingQuestion = false;
+                this.inDamageSelect = true;
+                this.sendStateInfo();
+                this.sendDamageSelectInfo();
+                
+                this.socket.once("send-damage", playerId => {
+                    if(!this.game.players[playerId]) return;
+                    
+                    this.game.toSpectators.emit("player-attacks-player", {
+                        from: this.id, 
+                        to: playerId
+                    });
+                    
+                    this.inDamageSelect = false;
+                    this.askQuestion();
+                    this.sendStateInfo();
+                    this.game.players[playerId].receiveTargetedDamage(this, 2);
+                });
+            }
+        })
         
     }
 }

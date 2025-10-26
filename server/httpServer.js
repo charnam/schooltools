@@ -4,7 +4,7 @@ const app = require("./app.js");
 
 const server = createServer(app);
 
-server.listen(8091);
+server.listen(8091, "0.0.0.0");
 console.log("Listening on port 8091")
 
 module.exports = server;

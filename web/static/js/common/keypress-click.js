@@ -42,7 +42,7 @@ class KeypressClick {
     
 };
 
-window.addEventListener("keypress", async event => {
+window.addEventListener("keydown", async event => {
     
     if(event.repeat) return;
     

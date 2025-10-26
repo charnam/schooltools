@@ -157,10 +157,16 @@ register_live({
                 
                 if(game.state == "pregame") {
                     const username = requestDetails.username;
-                    if(!username) return error("No username specified!");
-                    if(username.length < 3) return error("Your username is too short. Please choose a longer username.");
-                    if(username.length > 16) return error("Your username is too long. Please choose a shorter username.");
-                    if(!/^[a-zA-Z0-9\s]+$/.test(username)) return error("Your name includes symbols. You cannot have symbols in your name.")
+                    if(!username)
+                        return error("No username specified!");
+                    if(username.length < 3)
+                        return error("Your username is too short. Please choose a longer username.");
+                    if(username.length > 16)
+                        return error("Your username is too long. Please choose a shorter username.");
+                    if(!/^[a-zA-Z0-9\s]+$/.test(username))
+                        return error("Your name includes symbols. You cannot have symbols in your name.")
+                    if(Object.values(game.players).some(player => player.username == username))
+                        return error("Someone is already playing with this name. Please try again.")
                     
                     const player = new ThieveryPlayer(socket, game, requestDetails, session);
                     game.addPlayer(player);

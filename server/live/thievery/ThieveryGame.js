@@ -2,6 +2,8 @@ const Game = require("../Game.js");
 
 class ThieveryGame extends Game {
     
+    sendPenaltyMinimumStreak = 3;
+    
     get rankedPlayers() {
         return Object.values(this.players).sort((playerA, playerB) => playerB.answeredQuestions - playerA.answeredQuestions);
     }
@@ -10,14 +12,38 @@ class ThieveryGame extends Game {
         return {
             endAt: this.gameArgs.endAt,
             playerCount: Object.keys(this.players).length,
-            sendPenaltyMinimumStreak: 3
+            sendPenaltyMinimumStreak: this.sendPenaltyMinimumStreak
         };
-    }
+    };
     get spectatorInfo() {
         return {
             game: this.info,
             players: this.rankedPlayers.map(player => player.info)
         };
+    };
+    
+    get damageInfo() {
+        return {
+            players: Object.fromEntries(Object.entries(this.players).map(([id, player]) => [id, player.damageInfo]))
+        };
+    };
+    
+    get hasReachedClearCondition() {
+        if(this.gameArgs.endAt.type == "questions") {
+            if(this.answeredQuestions < this.game.gameArgs.endAt.value)
+                return `${Number(this.game.gameArgs.endAt.value) - this.answeredQuestions + this.penaltyQuestions} left to reach goal`;
+            
+            if(this.game.gameArgs.endAt.everyone)
+                return `Waiting on ${
+                            Object.values(this.game.players)
+                                .filter(player => player.answeredQuestions < this.gameArgs)
+                                .length
+                        } to reach goal`;
+            
+            return `Game should end soon`;
+        } else {
+            return "..."
+        }
     }
     
     constructor(set, gameArgs) {

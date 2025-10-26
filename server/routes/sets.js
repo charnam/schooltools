@@ -91,7 +91,7 @@ register({
                 
                 await db.run("DELETE FROM terms WHERE setid = ?", set.id);
                 
-                await db.run("UPDATE sets SET modification = ? WHERE id = ?", Date.now(), set.id);
+                await db.run("UPDATE sets SET title = ?, modification = ? WHERE id = ?", body.title, Date.now(), set.id);
                 
                 for(let position in body.terms) {
                     let {hint, definition} = body.terms[position];

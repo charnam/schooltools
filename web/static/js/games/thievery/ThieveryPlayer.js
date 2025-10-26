@@ -1,6 +1,6 @@
 import "/static/js/common/keypress-click.js";
 
-import { randInt } from "/static/js/common/random.js";
+import { randInt, randArr } from "/static/js/common/random.js";
 import Player from "../Player.js";
 import setWallpaper from "../wallpaper.js";
 import ThieveryPlayerViews from "./ThieveryPlayerViews.js";
@@ -9,8 +9,9 @@ import ordinalSuffix from "../../common/ordinalSuffix.js";
 class ThieveryPlayer extends Player {
     Views = ThieveryPlayerViews;
     
-    
     askQuestion(details) {
+        const questionId = this._currentQuestionId = Date.now();
+        
         const questionContainer =
             doc.el("#game")
                 .crel("div").addc("question")
@@ -30,7 +31,7 @@ class ThieveryPlayer extends Player {
                         .txt(answer.text)
                         .addc("answer-button")
                         .attr("keypress-click", (Number(buttonid) + 1))
-                        .attr("style", "opacity: 0;") // for animating
+                        .attr("style", "opacity: 0;") // for fading in
                         .on("click", () => {
                             if(!clickedButton) {
                                 questionContainer.addc("waiting")
@@ -42,6 +43,8 @@ class ThieveryPlayer extends Player {
                             }
                         })
                     .prnt()
+            
+            
             
         }
         
@@ -65,6 +68,7 @@ class ThieveryPlayer extends Player {
         })
         
         this.socket.once("answer-result", (correct) => {
+            if(this._currentQuestionId !== questionId) return;
             
             let animEl = doc.el("#game")
                 .crel("div").addc(correct ? "correct-animation" : "incorrect-animation");
@@ -96,26 +100,73 @@ class ThieveryPlayer extends Player {
         });
     }
     
+    cancelQuestion() {
+        this._currentQuestionId = null;
+        
+        const questions = doc.els("#game .question");
+        
+        for(let question of questions) {
+            question.addc("cancelled");
+            question.style.pointerEvents = "none";
+            
+            for(let clickable of question.els("[keypress-click]"))
+                clickable.removeAttribute("keypress-click");
+        }
+        
+        questions
+            .anim({
+                scale: [1, 0.8],
+                opacity: [1, 0],
+                translateY: [0, 20],
+                duration: 300,
+                easing: "ease-in"
+            })
+        
+        setTimeout(() => {
+            for(let question of questions) {
+                question.remove();
+            }
+        }, 300);
+    }
+    
     addBars(type, count) {
         
         const addId = ("streakBarGroup"+Math.random()).replace(".", "");
         
         for(let i = 0; i < count; i++) {
-            doc.el("#stats-bar .streak-bars")
-                .crel("div").addc(type).addc(addId);
+            const bar = document.createElement("div")
+            
+            if(type == "penalty-bar")
+                doc.el("#stats-bar .streak-bars").prepend(bar);
+            else
+                doc.el("#stats-bar .streak-bars").appendChild(bar);
+            
+            bar
+                .attr("style", "opacity: 0;")
+                .addc(type)
+                .addc(addId);
         }
         
-        const addedBars = doc.els("."+addId);
+        const addedBars = [...doc.els("."+addId)];
+        if(type == "penalty-bar")
+            addedBars.reverse();
         
-        addedBars
-            .anim({
-                opacity: [0, 1],
-                translateY: [100, 0],
-                easing: "ease-out",
-                duration: 250,
-                delayBetween: 100
-            });
-        
+        for(let i in addedBars) {
+            const element = addedBars[i];
+            const clientRect = element.getBoundingClientRect();
+            
+            element.style.width = "0";
+            
+            setTimeout(() => {
+                element.anim({
+                    opacity: [0, 1],
+                    translateY: [100, 0],
+                    width: (element.nextSibling ? [0, clientRect.width] : [clientRect.width, clientRect.width]),
+                    easing: "ease-out",
+                    duration: 250
+                });
+            }, i*100);
+        }
     }
     
     removeBars(type, count) {
@@ -139,20 +190,176 @@ class ThieveryPlayer extends Player {
         
     }
     
+    getDamageSelectWindow() {
+        
+        let damageSelectWindow = doc.el("#damage-select");
+        if(!damageSelectWindow) {
+            this.cancelQuestion();
+            damageSelectWindow = doc.el("#game")
+                .crel("div").attr("id", "damage-select")
+                
+            damageSelectWindow
+                .anim({
+                    opacity: [0, 1],
+                    scale: [1.2, 1],
+                    easing: "ease-out",
+                    duration: 300
+                })
+        }
+        
+        if(doc.el(".question:not(.cancelled)"))
+            this.cancelQuestion();
+        
+        return damageSelectWindow;
+        
+    }
+    
+    updateDamageSelect(info) {
+        this._damageSelectInfo = info;
+        this.getDamageSelectWindow();
+        
+        for(let playerId in info.players) {
+            let playerEl = doc.el(`#damage-select .player[player-id="${playerId}"]`);
+            if(!playerEl) {
+                playerEl = doc.el("#damage-select")
+                    .crel("div").addc("player")
+                        .attr("player-id", playerId)
+                        .crel("div").addc("player-penalty-value").prnt()
+                        .crel("div").addc("player-bar").prnt()
+                        .crel("div").addc("player-answered-value").prnt()
+                        .crel("div").addc("player-username").prnt()
+                        .on("click", () => {
+                            if(this.damageSelectSelectedPlayer == playerId) {
+                                for(let playerEl of doc.els(`.player:not([player-id="${playerId}"])`)) {
+                                    playerEl.anim({
+                                        opacity: [1, 0],
+                                        translateX: [0, -10],
+                                        brightness: [1, 0.2],
+                                        delayBetween: 20,
+                                        duration: 200,
+                                        easing: "ease-out"
+                                    });
+                                }
+                                this.closeDamageSelect();
+                                this.socket.emit("send-damage", playerId);
+                            } else {
+                                this.damageSelectSelectPlayer(playerId);
+                            }
+                        });
+            }
+            
+            const player = info.players[playerId];
+            
+            playerEl.attr("style", `
+                --rank: ${player.rank};
+                --penaltyQuestions: ${player.penaltyQuestions};
+                --answeredQuestions: ${player.answeredQuestions};
+            `);
+            
+            playerEl.el(".player-username").html("").txt(player.username);
+            
+            playerEl.el(".player-penalty-value").html("")
+            if(player.penaltyQuestions > 0)
+                playerEl.el(".player-penalty-value").txt(player.penaltyQuestions);
+            
+            playerEl.el(".player-answered-value").html("").txt(player.answeredQuestions);
+            
+            this.damageSelectSelectPlayer();
+        }
+    }
+    
+    closeDamageSelect() {
+        for(let clickable of doc.els("#damage-select [keypress-click]")) {
+            clickable.removeAttribute("keypress-click");
+        }
+        
+        doc.el("#damage-select").addc("closing");
+        doc.el("#damage-select").anim({
+            scaleX: [1, 2],
+            scaleY: [1, 1.5],
+            opacity: [1, 0],
+            duration: 300,
+            easing: "ease-out"
+        }).onfinish(() => {
+            for(let possibleDuplicate of doc.els("#damage-select")) {
+                possibleDuplicate.remove();
+            }
+        });
+        
+    }
+    
+    damageSelectSelectPlayer(playerid) {
+        const info = this._damageSelectInfo;
+        
+        if(!info || !info.players)
+            return;
+        
+        const damageSelectWindow = this.getDamageSelectWindow();
+        
+        if(playerid)
+            this.damageSelectSelectedPlayer = playerid;
+        else if(!this.damageSelectSelectedPlayer)
+            this.damageSelectSelectedPlayer = randArr(Object.keys(info.players))
+        
+        const selectedRank = info.players[this.damageSelectSelectedPlayer].rank
+        damageSelectWindow.attr("style", `
+            --maxQuestionsAnswered: ${Math.max(...Object.values(info.players).map(player => player.answeredQuestions))};
+            --selected-player: ${selectedRank - 1};
+        `);
+        
+        for(let player of doc.els(".player.selected, .player[keypress-click]")) {
+            player.remc("selected");
+            player.removeAttribute("keypress-click");
+        }
+        
+        const selectedPlayer = doc.el(".player[player-id=\""+this.damageSelectSelectedPlayer+"\"]");
+        if(selectedPlayer) {
+            selectedPlayer.addc("selected");
+            selectedPlayer.attr("keypress-click", "space");
+        }
+        
+        const upPlayerEntry = Object.entries(info.players).find(entry => entry[1].rank == selectedRank - 1);
+        const downPlayerEntry = Object.entries(info.players).find(entry => entry[1].rank == selectedRank + 1);
+        
+        if(upPlayerEntry) {
+            const upPlayerEl = doc.el(`.player[player-id="${upPlayerEntry[0]}"`);
+            if(upPlayerEl)
+                upPlayerEl.attr("keypress-click", "ArrowUp");
+        }
+        if(downPlayerEntry) {
+            const downPlayerEl = doc.el(`.player[player-id="${downPlayerEntry[0]}"`);
+            if(downPlayerEl)
+                downPlayerEl.attr("keypress-click", "ArrowDown");
+        }
+    }
+    
     constructor(args) {
         super("/games/thievery", args);
         
         setWallpaper("thievery-player.glsl");
         
+        this.socket.on("cancel-question", () => {
+            this.cancelQuestion();
+        });
+        this.socket.on("cancel-damage-select", () => {
+            this.closeDamageSelect();
+        });
+        
+        this.socket.on("damage-select-update", info => {
+            this.updateDamageSelect(info);
+        });
+        
         this.socket.on("state", state => {
             this.prepareView("game");
             
-            doc.el(".streak-info")
-                .on("click", () => {
-                    this.socket.emit("send-streak")
-                });
-            
-            console.log(state)
+            if(state.self.canSendDamage) {
+                doc.el(".streak-info").onclick = () => {
+                    this.socket.emit("use-streak");
+                    this.cancelQuestion();
+                };
+            } else {
+                doc.el(".streak-info").onclick = null;
+            }
             
             if(state.game.endAt.type == "questions") {
                 const questionsLeft =
@@ -209,12 +416,12 @@ class ThieveryPlayer extends Player {
             }
             this._previousRank = state.self.rank;
             
-            if(state.self.streak >= state.game.sendPenaltyMinimumStreak) {
+            if(state.self.canSendDamage) {
                 doc.el(".streak-details").addc("can-send-damage");
-                doc.el(".streak-info")
-                    .attr("keypress-click", "space")
+                doc.el(".streak-info").attr("keypress-click", "space")
             } else {
                 doc.el(".streak-details").remc("can-send-damage")
+                doc.el(".streak-info").removeAttribute("keypress-click")
             }
             
             const changeStreakBarsBy = state.self.streak - doc.els(".streak-bar").length;
