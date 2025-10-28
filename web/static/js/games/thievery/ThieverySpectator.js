@@ -109,7 +109,7 @@ class ThieverySpectator extends Spectator {
                     })();
                 }
                 
-                this.playSound("spectator/scores.mp3", "scoresJingle");
+                this.playSound("spectator/scores-v2.mp3", "scoresJingle");
             }
             
         });
