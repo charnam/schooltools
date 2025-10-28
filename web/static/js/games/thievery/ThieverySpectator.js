@@ -5,13 +5,13 @@ import ThieverySpectatorViews from "./ThieverySpectatorViews.js";
 class ThieverySpectator extends Spectator {
     Views = ThieverySpectatorViews;
     
-    updateBar(name, value, penalties, rank) {
+    updateBar(name, title, value, penalties, rank) {
         const chart = doc.el("#game .bar-chart");
         let bar = document.getElementsByName(name)[0];
         
         if(!bar) {
             bar = chart.el(".bars")
-                .crel("div").addc("bar").attr("name", name)
+                .crel("div").addc("bar").attr("name", name).attr("username", title)
                     .crel("div").addc("penalty-questions").prnt();
         }
         
@@ -79,7 +79,7 @@ class ThieverySpectator extends Spectator {
         
         for(let rank in state.players) {
             const player = state.players[rank];
-            this.updateBar(player.username, player.answeredQuestions, player.penaltyQuestions, rank);
+            this.updateBar(player.id, player.username, player.answeredQuestions, player.penaltyQuestions, rank);
         }
         
     }
@@ -92,6 +92,66 @@ class ThieverySpectator extends Spectator {
         this.socket.on("state", (state) => {
             
             this.updateBarChart(state);
+            
+        });
+        
+        this.socket.on("player-attacks-player", info => {
+            const fromBar = document.getElementsByName(info.from)[0];
+            const toBar = document.getElementsByName(info.to)[0];
+            
+            if(!fromBar || !toBar) return;
+            
+            const penaltyShot = doc.crel("div").addc("penalty-shot");
+            const jumpHeightMin = Math.min(window.innerWidth, window.innerHeight) * 0.1;
+            const fadeTime = 20;
+            const duration = 500;
+            
+            const fromRect = fromBar.getBoundingClientRect();
+            const toRect = toBar.getBoundingClientRect();
+            
+            const jumpTo = Math.min(fromRect.y, toRect.y) - jumpHeightMin;
+            
+            penaltyShot.anim({
+                opacity: [0, 1],
+                duration: fadeTime,
+                easing: "linear"
+            });
+            setTimeout(() => {
+                penaltyShot.anim({
+                    opacity: [1, 0],
+                    duration: fadeTime,
+                    easing: "linear"
+                });
+            }, duration - fadeTime)
+            
+            penaltyShot.anim({
+                left: [
+                    fromRect.x + fromRect.width / 2,
+                    toRect.x + toRect.width / 2
+                ],
+                easing: "linear",
+                duration
+            });
+            
+            // TODO: fix the ball time ratio code issues
+            const timeRatio = (fromRect.y - jumpTo) / (toRect.y - jumpTo);
+            
+            penaltyShot.anim({
+                top: [fromRect.y, jumpTo],
+                brightness: [0.5, 1],
+                easing: "ease-out",
+                duration: duration * timeRatio
+            }).onfinish(() => {
+                
+                penaltyShot.anim({
+                    top: [jumpTo, toRect.y],
+                    easing: "ease-in",
+                    duration: duration - duration * timeRatio
+                }).onfinish(() => {
+                    penaltyShot.remove();
+                });
+                
+            });
             
         })
     }

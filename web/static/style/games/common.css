@@ -20,6 +20,10 @@
     }
 }
 
+body {
+    background: var(--default-background-color);
+}
+
 body,
 #view-wrapper,
 #view-wrapper > * {

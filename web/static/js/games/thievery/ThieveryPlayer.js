@@ -192,11 +192,11 @@ class ThieveryPlayer extends Player {
     
     getDamageSelectWindow() {
         
-        let damageSelectWindow = doc.el("#damage-select");
+        let damageSelectWindow = doc.el(".damage-select:not(.cancelled)");
         if(!damageSelectWindow) {
             this.cancelQuestion();
             damageSelectWindow = doc.el("#game")
-                .crel("div").attr("id", "damage-select")
+                .crel("div").attr("class", "damage-select")
                 
             damageSelectWindow
                 .anim({
@@ -216,12 +216,12 @@ class ThieveryPlayer extends Player {
     
     updateDamageSelect(info) {
         this._damageSelectInfo = info;
-        this.getDamageSelectWindow();
+        const damageSelectWindow = this.getDamageSelectWindow();
         
         for(let playerId in info.players) {
-            let playerEl = doc.el(`#damage-select .player[player-id="${playerId}"]`);
+            let playerEl = damageSelectWindow.el(`.player[player-id="${playerId}"]`);
             if(!playerEl) {
-                playerEl = doc.el("#damage-select")
+                playerEl = damageSelectWindow
                     .crel("div").addc("player")
                         .attr("player-id", playerId)
                         .crel("div").addc("player-penalty-value").prnt()
@@ -230,7 +230,7 @@ class ThieveryPlayer extends Player {
                         .crel("div").addc("player-username").prnt()
                         .on("click", () => {
                             if(this.damageSelectSelectedPlayer == playerId) {
-                                for(let playerEl of doc.els(`.player:not([player-id="${playerId}"])`)) {
+                                for(let playerEl of damageSelectWindow.els(`.player:not([player-id="${playerId}"])`)) {
                                     playerEl.anim({
                                         opacity: [1, 0],
                                         translateX: [0, -10],
@@ -269,22 +269,23 @@ class ThieveryPlayer extends Player {
     }
     
     closeDamageSelect() {
-        for(let clickable of doc.els("#damage-select [keypress-click]")) {
-            clickable.removeAttribute("keypress-click");
-        }
         
-        doc.el("#damage-select").addc("closing");
-        doc.el("#damage-select").anim({
-            scaleX: [1, 2],
-            scaleY: [1, 1.5],
-            opacity: [1, 0],
-            duration: 300,
-            easing: "ease-out"
-        }).onfinish(() => {
-            for(let possibleDuplicate of doc.els("#damage-select")) {
-                possibleDuplicate.remove();
+        for(let damageSelectWindow of doc.els(".damage-select:not(.cancelled)")) {
+            for(let clickable of damageSelectWindow.els("[keypress-click]")) {
+                clickable.removeAttribute("keypress-click");
             }
-        });
+            
+            damageSelectWindow.addc("closing").addc("cancelled");
+            damageSelectWindow.anim({
+                scaleX: [1, 2],
+                scaleY: [1, 1.5],
+                opacity: [1, 0],
+                duration: 300,
+                easing: "ease-out"
+            }).onfinish(() => {
+                damageSelectWindow.remove();
+            });
+        }
         
     }
     
@@ -307,12 +308,12 @@ class ThieveryPlayer extends Player {
             --selected-player: ${selectedRank - 1};
         `);
         
-        for(let player of doc.els(".player.selected, .player[keypress-click]")) {
+        for(let player of damageSelectWindow.els(".player.selected, .player[keypress-click]")) {
             player.remc("selected");
             player.removeAttribute("keypress-click");
         }
         
-        const selectedPlayer = doc.el(".player[player-id=\""+this.damageSelectSelectedPlayer+"\"]");
+        const selectedPlayer = damageSelectWindow.el(".player[player-id=\""+this.damageSelectSelectedPlayer+"\"]");
         if(selectedPlayer) {
             selectedPlayer.addc("selected");
             selectedPlayer.attr("keypress-click", "space");
@@ -322,12 +323,12 @@ class ThieveryPlayer extends Player {
         const downPlayerEntry = Object.entries(info.players).find(entry => entry[1].rank == selectedRank + 1);
         
         if(upPlayerEntry) {
-            const upPlayerEl = doc.el(`.player[player-id="${upPlayerEntry[0]}"`);
+            const upPlayerEl = damageSelectWindow.el(`.player[player-id="${upPlayerEntry[0]}"`);
             if(upPlayerEl)
                 upPlayerEl.attr("keypress-click", "ArrowUp");
         }
         if(downPlayerEntry) {
-            const downPlayerEl = doc.el(`.player[player-id="${downPlayerEntry[0]}"`);
+            const downPlayerEl = damageSelectWindow.el(`.player[player-id="${downPlayerEntry[0]}"`);
             if(downPlayerEl)
                 downPlayerEl.attr("keypress-click", "ArrowDown");
         }
@@ -348,6 +349,18 @@ class ThieveryPlayer extends Player {
         this.socket.on("damage-select-update", info => {
             this.updateDamageSelect(info);
         });
+        
+        this.socket.on("targeted-damage", info => {
+            doc.el("body")
+                .crel("div").addc("damage-notification")
+                    .txt(info.sender.username+" sent you a penalty of "+info.amount)
+                    .anim({
+                        opacity: [1, 0],
+                        translateY: [0, -50],
+                        easing: "linear",
+                        duration: 3000
+                    });
+        })
         
         this.socket.on("state", state => {
             this.prepareView("game");

@@ -31,14 +31,10 @@ class ThieveryGame extends Game {
     get hasReachedClearCondition() {
         if(this.gameArgs.endAt.type == "questions") {
             if(this.answeredQuestions < this.game.gameArgs.endAt.value)
-                return `${Number(this.game.gameArgs.endAt.value) - this.answeredQuestions + this.penaltyQuestions} left to reach goal`;
+                return false;
             
             if(this.game.gameArgs.endAt.everyone)
-                return `Waiting on ${
-                            Object.values(this.game.players)
-                                .filter(player => player.answeredQuestions < this.gameArgs)
-                                .length
-                        } to reach goal`;
+                return false;
             
             return `Game should end soon`;
         } else {

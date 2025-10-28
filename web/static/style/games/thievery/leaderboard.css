@@ -147,16 +147,7 @@
 }
 
 .bar-chart .bar:before {
-    content: attr(name);
-    position: absolute;
-    color: var(--text);
-    font-size: calc(var(--one-horizontal-grid-space) / 5);
-    text-align: right;
-    top: calc(100% + 7vmin);
-    transform: rotate(-25deg);
-}
-.bar-chart .bar:before {
-    content: attr(name);
+    content: attr(username);
     position: absolute;
     color: var(--text);
     font-size: calc(var(--one-horizontal-grid-space) / 5);
@@ -165,4 +156,13 @@
     transform: rotate(-20deg);
     right: 50%;
     transform-origin: right;
+}
+
+.penalty-shot {
+    width: 5vmin;
+    height: 5vmin;
+    background: radial-gradient(#f00, transparent 50%);
+    border-radius: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
 }

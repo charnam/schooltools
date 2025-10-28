@@ -1,6 +1,7 @@
+
 @import url("common.css");
-@import url("../player.css");
 @import url("../common-dark.css");
+@import url("../player.css");
 
 @import url("./player/damage-select.css");
 
@@ -208,4 +209,22 @@
 
 body:has(#game.visible .penalty-bar) #wallpaper {
     filter: saturate(0.0);
+}
+
+.damage-notification {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #f000;
+    color: #f00;
+    text-shadow: 0 0.5vmin 1vmin var(--text-shadow);
+    font-size: 5vmin;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: flashDamageNotification 0.3s ease-out;
+    pointer-events: none;
+    z-index: 2000
 }

@@ -1,5 +1,5 @@
 
-#damage-select {
+.damage-select {
     --player-height: 9vmin;
     
     position: fixed;
@@ -11,6 +11,15 @@
     color: var(--text);
     text-shadow: 0 2px 5px var(--text-shadow);
     z-index: 1000;
+}
+
+@keyframes flashDamageNotification {
+    0% {
+        background: #f008;
+    }
+    100% {
+        background: #f000;
+    }
 }
 
 @keyframes damageSelectFlashText {
@@ -25,7 +34,7 @@
     }
 }
 
-#damage-select:before {
+.damage-select:before {
     content: "Send extra questions to whom?";
     animation: damageSelectFlashText 1.9s ease-in-out infinite;
     font-style: italic;
@@ -38,7 +47,7 @@
     z-index: 1000;
 }
 
-#damage-select .player {
+.damage-select .player {
     --relativeY: calc((var(--rank) - var(--selected-player) - 1) * var(--player-height));
     
     display: grid;
@@ -54,8 +63,8 @@
     top: calc(var(--relativeY) + 50vh - var(--player-height) / 2);
 }
 
-#damage-select .player.selected.keypress-clicked,
-#damage-select .player.selected:active {
+.damage-select .player.selected.keypress-clicked,
+.damage-select .player.selected:active {
     transform: scale(0.8);
     filter: brightness(0.8);
 }
@@ -75,7 +84,7 @@
     }
 }
 
-#damage-select .player:before {
+.damage-select .player:before {
     content: "";
     display: inline-block;
     border: calc(var(--player-height) / 4) solid transparent;
@@ -84,17 +93,17 @@
     animation: damageSelectSelectionIndicator 1s ease-in-out infinite;
     transition: border 0.1s ease-in-out;
 }
-#damage-select .player.selected:before {
+.damage-select .player.selected:before {
     border-left-color: yellow;
 }
 
-#damage-select .player-answered-value {
+.damage-select .player-answered-value {
     color: #3f883f;
     font-weight: bold;
     font-style: italic;
 }
 
-#damage-select .player-bar {
+.damage-select .player-bar {
     margin: 1vmin;
     height: 4vmin;
     background: linear-gradient(to bottom, #54b054, #195b19);
@@ -106,7 +115,7 @@
     box-shadow: 0 2px 5px var(--text-shadow), 0 3px 7px inset #fff5;
     position: relative;
 }
-#damage-select .player-bar:after {
+.damage-select .player-bar:after {
     content: "";
     background: linear-gradient(to bottom, #c229, #c00, #c229), linear-gradient(to left, #900, #500f 10vmin);
     width: calc(100% / (var(--answeredQuestions) / var(--penaltyQuestions)));
@@ -121,14 +130,14 @@
     transition: width 0.1s ease-in-out;
 }
 
-#damage-select .player-penalty-value {
+.damage-select .player-penalty-value {
     color: #c30000;
     text-align: right;
     font-style: italic;
     font-weight: bold;
 }
 
-#damage-select .player-username {
+.damage-select .player-username {
     font-style: italic;
     font-size: 4vmin;
 }

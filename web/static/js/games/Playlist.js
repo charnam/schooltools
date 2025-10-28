@@ -21,4 +21,9 @@ export default [
         title: "Undefined",
         creator: "SchoolTools"
     },
+    {
+        filename: "music/zero.mp3",
+        title: "Nonzero",
+        creator: "SchoolTools"
+    }
 ];

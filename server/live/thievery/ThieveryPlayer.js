@@ -26,7 +26,7 @@ class ThieveryPlayer extends Player {
             if(this.game.gameArgs.endAt.everyone)
                 return `Waiting on ${
                             Object.values(this.game.players)
-                                .filter(player => player.answeredQuestions < this.gameArgs.endAt.value)
+                                .filter(player => player.answeredQuestions < this.game.gameArgs.endAt.value)
                                 .length
                         } to reach goal`;
             
@@ -222,8 +222,13 @@ class ThieveryPlayer extends Player {
                 this.sendStateInfo();
                 this.sendDamageSelectInfo();
                 
-                this.socket.once("send-damage", playerId => {
-                    if(!this.game.players[playerId]) return;
+                const receiveDamage = playerId => {
+                    if(!this.game.players[playerId] || playerId == this.id) {
+                        this.sendDamageSelectInfo();
+                        return;
+                    }
+                    
+                    this.socket.off("send-damage", receiveDamage);
                     
                     this.game.toSpectators.emit("player-attacks-player", {
                         from: this.id, 
@@ -231,10 +236,14 @@ class ThieveryPlayer extends Player {
                     });
                     
                     this.inDamageSelect = false;
-                    this.askQuestion();
-                    this.sendStateInfo();
-                    this.game.players[playerId].receiveTargetedDamage(this, 2);
-                });
+                    setTimeout(() => {
+                        this.askQuestion();
+                        this.sendStateInfo();
+                        this.game.players[playerId].receiveTargetedDamage(this, 2);
+                    }, 500);
+                };
+                
+                this.socket.on("send-damage", receiveDamage);
             }
         })
         
