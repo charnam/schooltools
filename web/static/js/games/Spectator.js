@@ -95,7 +95,7 @@ class Spectator extends GameClient {
             if(shortenedURL.errorcode)
                 doc.el("#game-url").txt(window.location.host + "/live/thievery/play")
             else
-                doc.el("#game-url").txt(shortenedURL.shorturl);
+                doc.el("#game-url").txt("Visit "+shortenedURL.shorturl.replace("https://", "")+" to join");
         });
         
         this.socket.on("players", players => {
