@@ -115,7 +115,6 @@ class ThieverySpectator extends Spectator {
         });
         
         this.socket.on("end-game", info => {
-            //this.
             this.prepareView("end");
             const endContainer = doc.el("#end");
             
