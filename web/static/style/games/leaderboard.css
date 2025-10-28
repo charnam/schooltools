@@ -47,6 +47,7 @@
 
 #game-url span {
     font-weight: 600;
+    font-family: monospace;
 }
 
 #pregame-main {
