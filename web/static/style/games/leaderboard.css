@@ -42,10 +42,12 @@
     bottom: 32px;
     left: 32px;
     font-size: 2vw;
-    font-weight: 600;
     font-style: italic;
 }
 
+#game-url span {
+    font-weight: 600;
+}
 
 #pregame-main {
     display: flex;
