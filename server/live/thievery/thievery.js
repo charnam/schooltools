@@ -65,8 +65,8 @@ register({
                     endvalue: value => value > 0 ? success() : error("Question / minute end value is not a number greater than 0"),
                     set: "string",
                     // TODO: add automatic requirements check for these sort of "enum" values
-                    answerwith: value => ["both", "answers", "definition"].includes(value)
-                                    ? success() : error("answerwith must be both, answers, or definition"),
+                    answerwith: value => ["both", "hint", "definition"].includes(value)
+                                    ? success() : error("answerwith must be both, hint, or definition"),
                     damage: value => ["disabled", "random", "targeted"].includes(value)
                                 ? success() : error("damage must be disabled, random, or targeted")
                 },

@@ -22,7 +22,7 @@ class Spectator extends GameClient {
         if(this.initialQuery.moderationKey == this.game.moderationKey) {
             this.isModerator = true;
             this.socket.on("startgame", () => {
-                if(this.game.state == "pregame") {
+                if(this.game.state == "pregame" && Object.keys(this.game.players).length >= 2) {
                     this.game.countDownToStart();
                 }
             });

@@ -1,6 +1,7 @@
 @import url("common.css");
 @import url("../leaderboard.css");
 @import url("../common-light.css");
+@import url("./leaderboard/end.css");
 
 .bar-chart {
     

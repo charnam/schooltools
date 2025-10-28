@@ -4,3 +4,20 @@
 body {
     font-family: "Zalando Sans", arial;
 }
+
+#pre-end, #end {
+    transition: none !important;
+    animation: none !important;
+}
+
+#pre-end {
+    background-color: black;
+    background-image: url("./static.gif");
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
+}
+
+#end {
+    background: black;
+}

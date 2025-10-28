@@ -87,6 +87,7 @@
     border-radius: var(--streak-bar-radius);
     --streak-bar-radius: 1vmin;
     width: 35vw;
+    mask-image: linear-gradient(0deg, #ffffffff 90%, #00000022 98%, #00000000 100%);
     -webkit-mask-image: -webkit-linear-gradient(0deg, #ffffffff 90%, #00000022 98%, #00000000 100%);
 }
 
@@ -227,4 +228,32 @@ body:has(#game.visible .penalty-bar) #wallpaper {
     animation: flashDamageNotification 0.3s ease-out;
     pointer-events: none;
     z-index: 2000
+}
+
+@keyframes fadeInGameOver {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(8vmin);
+    }
+    100% {
+        opacity: 0.3;
+        transform: scale(1.0) translateY(0vmin);
+    }
+}
+
+#end:before {
+    content: "Thanks for playing!";
+    animation: fadeInGameOver 5s ease-in-out;
+    opacity: 0.3;
+    font-size: 5vmin;
+    
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

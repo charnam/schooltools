@@ -1,0 +1,30 @@
+div#end {
+    display: grid;
+    --column-size: min(33.33vw, 40vmin);
+    grid-template-columns: var(--column-size) var(--column-size) var(--column-size);
+    font-size: 4vmin;
+    justify-content: space-evenly;
+    background: linear-gradient(to bottom, #222, #000);
+}
+
+.end-col-title {
+    color: white;
+    text-shadow: 0 0.5vmin 1vmin #000;
+    font-size: 5vmin;
+    text-align: center;
+    margin-top: 3vmin;
+}
+
+.end-player {
+    color: white;
+    text-align: center;
+    font-weight: 200;
+    box-sizing: border-box;
+    padding: 2vmin;
+    display: flex;
+    justify-content: space-between;
+}
+.end-player:nth-child(2) {
+    font-weight: 500;
+    margin-top: 2vmin;
+}

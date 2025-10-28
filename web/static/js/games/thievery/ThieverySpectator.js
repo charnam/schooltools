@@ -1,6 +1,7 @@
 import Spectator from "../Spectator.js";
 import setWallpaper from "../wallpaper.js";
 import ThieverySpectatorViews from "./ThieverySpectatorViews.js";
+import ordinalSuffix from "../../common/ordinalSuffix.js";
 
 class ThieverySpectator extends Spectator {
     Views = ThieverySpectatorViews;
@@ -94,6 +95,65 @@ class ThieverySpectator extends Spectator {
             this.updateBarChart(state);
             
         });
+        
+        this.socket.on("gamestate", state => {
+            if(state == "pre-end") {
+                if(this.playingSounds.music) {
+                    (async () => {
+                        for(let i = 0; i < 10; i++) {
+                            this.playingSounds.music.volume-=0.1;
+                            await new Promise(res => setTimeout(res, 80));
+                        }
+                        
+                        this.playingSounds.music.pause();
+                    })();
+                }
+                
+                this.playSound("spectator/scores.mp3", "scoresJingle");
+            }
+            
+        });
+        
+        this.socket.on("end-game", info => {
+            //this.
+            this.prepareView("end");
+            const endContainer = doc.el("#end");
+            
+            endContainer.html("");
+            
+            const addPlayerColumn = (title, players) => {
+                const col = endContainer.crel("div").addc("end-col")
+                
+                col.crel("div").addc("end-col-title")
+                    .txt(title);
+                
+                for(let player of players) {
+                    const playerEl = col.crel("div").addc("end-player")
+                    
+                    playerEl.crel("div").addc("end-player-name").txt(player[0]);
+                    playerEl.crel("div").addc("end-player-info").txt(player[1])
+                }
+            }
+            
+            addPlayerColumn("Rank", info.finalRanks.map(player => [
+                player.username,
+                ordinalSuffix(player.rank)
+            ]));
+            addPlayerColumn("Accuracy", info.accuratePlayers.map(player => [
+                player.username,
+                isNaN(player.accuracy) ? "N/A" : Math.round(player.accuracy * 1000) / 10 + "%"
+            ]));
+            
+            endContainer
+                .crel("div").addc("end-col")
+                    .crel("div").addc("end-col-title")
+                        .txt("(beta)")
+                    .prnt()
+                    .crel("div").addc("end-player")
+                        .txt("More information will be here in a later version.")
+            
+            endContainer.els(".end-col").anim({translateY: [-10, 0], opacity: [0, 1], duration: 500, delayBetween: 1000, easing: "ease-out"})
+        })
         
         this.socket.on("player-attacks-player", info => {
             const fromBar = document.getElementsByName(info.from)[0];

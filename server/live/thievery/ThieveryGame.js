@@ -21,6 +21,14 @@ class ThieveryGame extends Game {
             players: this.rankedPlayers.map(player => player.info)
         };
     };
+    get endGameInfo() {
+        const players = this.rankedPlayers.map(player => player.info);
+        return {
+            finalRanks: players,
+            accuratePlayers: players.toSorted((playerA, playerB) => playerB.accuracy - playerA.accuracy),
+            averageAccuracy: players.reduce((prev, cur) => prev + cur, 0) / this.rankedPlayers.length
+        };
+    }
     
     get damageInfo() {
         return {
@@ -30,16 +38,24 @@ class ThieveryGame extends Game {
     
     get hasReachedClearCondition() {
         if(this.gameArgs.endAt.type == "questions") {
-            if(this.answeredQuestions < this.game.gameArgs.endAt.value)
+            const questionsToGoal = Math[this.gameArgs.endAt.everyone ? "min" : "max"](
+                ...Object.values(this.players).map(player => player.answeredQuestions)
+            );
+            if(questionsToGoal < this.gameArgs.endAt.value)
                 return false;
             
-            if(this.game.gameArgs.endAt.everyone)
-                return false;
-            
-            return `Game should end soon`;
+            return true;
         } else {
-            return "..."
+            return true;
         }
+    }
+    
+    end() {
+        this.state = "pre-end";
+        setTimeout(() => {
+            this.state = "end";
+            this.toSpectators.emit("end-game", this.endGameInfo);
+        }, 500)
     }
     
     constructor(set, gameArgs) {
@@ -50,7 +66,11 @@ class ThieveryGame extends Game {
         
         this.on("update", () => {
             if(this.state == "game") {
-                this.toSpectators.emit("state", this.spectatorInfo);
+                if(this.hasReachedClearCondition) {
+                    this.end();
+                } else {
+                    this.toSpectators.emit("state", this.spectatorInfo);
+                }
             }
         });
         

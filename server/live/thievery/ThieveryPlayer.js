@@ -120,6 +120,7 @@ class ThieveryPlayer extends Player {
             
             if(correctAnswer == value) {
                 this.socket.emit("answer-result", true);
+                this.answeredResults.push(true);
                 
                 const oldRank = this.rank;
                 if(this.penaltyQuestions > 0)
@@ -140,6 +141,8 @@ class ThieveryPlayer extends Player {
                 this.askQuestion();
             } else {
                 this.socket.emit("answer-result", false);
+                this.answeredResults.push(false);
+                
                 this.streak = 0;
                 this.addPenaltyQuestions(3);
                 this.askQuestion();

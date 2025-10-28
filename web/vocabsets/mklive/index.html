@@ -10,9 +10,12 @@
     <body>
         <header></header>
         <main>
-            <h2>Create Live Game</h2>
+            <h2>Create Live Game <small style="color: red;">(beta!)</small></h2>
             <p>
                 <a href="javascript:openVocabPage('view')">Return</a>
+            </p>
+            <p>
+                <i>Notice: Some options are currently disabled, as the game is not completely finished yet. They will be added later on.</i>
             </p>
             <fieldset>
                 <legend>Game Options -
@@ -31,7 +34,7 @@
                             End game after
                             <input type="number" name="endvalue" style="width: 64px;" value="30"/>
                             <select name="endtype" id="endtype" value="questions">
-                                <option value="minutes">minutes of game time</option>
+                                <option value="minutes" disabled>minutes of game time</option>
                                 <option value="questions" selected>questions have been answered by a player</option>
                                 <option value="questions_everyone">questions have been answered by everyone</option>
                                 <option value="questions_total" disabled>questions have been answered in total</option>
@@ -41,7 +44,7 @@
                     </p>
                     <ul id="questions_everyone_extra" style="display: none;">
                         <li>
-                            <label>
+                            <label disabled>
                                 Should players continue answering questions until everyone reaches your goal?
                                 <input type="checkbox" name="playerscontinue" checked>
                             </label>
@@ -58,13 +61,13 @@
                         </label>
                     </p>
                     <p>
-                        <label>
+                        <label disabled>
                             Penalty questions?
                             <input type="checkbox" checked name="penalties" value="true" id="penalties" />
                         </label>
                     </p>
                     <p id="damage-disable">
-                        <label>
+                        <label disabled>
                             Enable damage?
                             <select name="damage" value="targeted" id="damage-select">
                                 <option value="disabled">Disabled</option>
