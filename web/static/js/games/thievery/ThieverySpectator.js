@@ -102,7 +102,7 @@ class ThieverySpectator extends Spectator {
                     (async () => {
                         for(let i = 0; i < 10; i++) {
                             this.playingSounds.music.volume-=0.1;
-                            await new Promise(res => setTimeout(res, 80));
+                            await new Promise(res => setTimeout(res, 10));
                         }
                         
                         this.playingSounds.music.pause();
@@ -140,7 +140,7 @@ class ThieverySpectator extends Spectator {
             ]));
             addPlayerColumn("Accuracy", info.accuratePlayers.map(player => [
                 player.username,
-                isNaN(player.accuracy) ? "N/A" : Math.round(player.accuracy * 1000) / 10 + "%"
+                player.answeredQuestions == 0 ? "N/A" : Math.round(player.accuracy * 1000) / 10 + "%"
             ]));
             
             endContainer
@@ -150,6 +150,10 @@ class ThieverySpectator extends Spectator {
                     .prnt()
                     .crel("div").addc("end-player")
                         .txt("More information will be here in a later version.")
+                    .prnt()
+                    .crel("div").addc("end-player")
+                        .txt("Thanks for playing!")
+                    .prnt()
             
             endContainer.els(".end-col").anim({translateY: [-10, 0], opacity: [0, 1], duration: 500, delayBetween: 1000, easing: "ease-out"})
         })

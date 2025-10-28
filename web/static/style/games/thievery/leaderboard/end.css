@@ -5,6 +5,8 @@ div#end {
     font-size: 4vmin;
     justify-content: space-evenly;
     background: linear-gradient(to bottom, #222, #000);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .end-col-title {
@@ -17,14 +19,25 @@ div#end {
 
 .end-player {
     color: white;
-    text-align: center;
     font-weight: 200;
     box-sizing: border-box;
     padding: 2vmin;
     display: flex;
     justify-content: space-between;
 }
+.end-player-name {
+    overflow: hidden;
+    mask-image: linear-gradient(0deg, #fff 80%, #fff0);
+    -webkit-mask-image: -webkit-linear-gradient(0deg, #fff 80%, #fff0);
+    width: 100%;
+    text-align: left;
+}
+
 .end-player:nth-child(2) {
     font-weight: 500;
     margin-top: 2vmin;
+}
+
+.end-col:nth-child(3) {
+    text-align: center;
 }

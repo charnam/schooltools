@@ -76,10 +76,10 @@
 }
 
 .player {
-    width: 320px;
     background: linear-gradient(to bottom, #000a, #000);
     font-size: 25px;
-    padding: 5px;
+    padding: 5px 20px;
+    display: inline-block;
     text-align: center;
     border-radius: 5px;
     margin: 5px;

@@ -3,6 +3,17 @@
 @import url("../common-light.css");
 @import url("./leaderboard/end.css");
 
+#game {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+
+#game::-webkit-scrollbar {
+    display: none;
+}
+
+
 .bar-chart {
     
     --xaxis-width: 10vmin;
@@ -84,7 +95,10 @@
     flex: none;
     margin-left: var(--bar-margin);
     background: linear-gradient(to bottom, #39ab5f, #25703e);
-    border-radius: 2vmin 2vmin 0 0;
+    
+    --bar-radius: calc(var(--one-horizontal-grid-space) * 0.1);
+    border-radius: var(--bar-radius) var(--bar-radius) 0 0;
+    
     position: absolute;
     
     left: calc(var(--rank) * var(--one-horizontal-grid-space));

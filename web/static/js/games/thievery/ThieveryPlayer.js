@@ -162,9 +162,12 @@ class ThieveryPlayer extends Player {
                     opacity: [0, 1],
                     translateY: [100, 0],
                     width: (element.nextSibling ? [0, clientRect.width] : [clientRect.width, clientRect.width]),
+                    startValues: false,
+                    keepValues: false,
                     easing: "ease-out",
                     duration: 250
                 });
+                element.attr("style", "")
             }, i*100);
         }
     }

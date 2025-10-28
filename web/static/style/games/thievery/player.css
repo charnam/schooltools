@@ -242,7 +242,7 @@ body:has(#game.visible .penalty-bar) #wallpaper {
 }
 
 #end:before {
-    content: "Thanks for playing!";
+    content: "Game over - Check the leaderboard to see how you did!";
     animation: fadeInGameOver 5s ease-in-out;
     opacity: 0.3;
     font-size: 5vmin;
