@@ -86,10 +86,16 @@ class Spectator extends GameClient {
             doc.el("#startgame").on("click", () => this.socket.emit("startgame"));
         });
         
-        this.socket.on("joincode", code => {
+        this.socket.on("joincode", async code => {
             this.prepareView("pregame");
             
             doc.el("#joincode").html("").txt(code);
+            
+            const shortenedURL = await fetch("https://is.gd/create.php?format=json&url=" + window.location.protocol + "//" + window.location.host + "/live/thievery/play/?joincode="+code).then(evt => evt.json());
+            if(shortenedURL.errorcode)
+                doc.el("#game-url").txt(window.location.host + "/live/thievery/play")
+            else
+                doc.el("#game-url").txt(shortenedURL.shorturl);
         });
         
         this.socket.on("players", players => {

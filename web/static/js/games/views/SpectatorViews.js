@@ -11,6 +11,7 @@ class SpectatorViews extends DefaultViews {
         doc.el("#pregame")
             .crel("div").attr("id", "pregame-sidebar")
                 .crel("div").attr("id", "joincode").prnt()
+                .crel("div").attr("id", "game-url").prnt()
             .prnt()
             .crel("div").attr("id", "pregame-main")
                 .crel("div").attr("id", "pregame-header-bar")
