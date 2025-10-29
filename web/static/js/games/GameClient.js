@@ -31,6 +31,10 @@ class GameClient {
             if(id !== null)
                 this.playingSounds[id] = aud;
             
+            // HACK: do this in a better way later
+            if(id == "music")
+                aud.volume = 0.5;
+            
             aud.onended = () => {
                 if(this.playingSounds[id] == aud)
                     delete this.playingSounds[id];

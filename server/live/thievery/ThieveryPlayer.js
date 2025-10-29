@@ -47,6 +47,7 @@ class ThieveryPlayer extends Player {
             username: this.username,
             penaltyQuestions: this.penaltyQuestions,
             answeredQuestions: this.answeredQuestions,
+            totalAnswered: this.totalAnswered,
             canSendDamage: this.canSendDamage,
             goalCondition: this.goalCondition,
             streak: this.streak,

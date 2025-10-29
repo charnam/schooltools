@@ -115,26 +115,17 @@ class Spectator extends GameClient {
                     !this.currentState.current_pregame_players ||
                     !this.currentState.current_pregame_players.some(oldplayer => oldplayer.id == player.id)
                 ) {
+                    this.playSound("spectator/joingame.mp3");
                     let playerEl = playersList
                         .crel("div").addc("player").attr("playerid", player.id)
                             .txt(player.username)
                             .on("click", () => this.socket.emit("kick-player", player.id))
                     playerEl.anim({
-                        scaleX: [1.2, 0.7],
-                        scaleY: [0.8, 1.1],
+                        scale: [0.8, 1],
                         opacity: [0, 1],
-                        translateX: [-200, 100],
                         easing: "ease-out",
                         duration: 100
-                    }).onfinish(() =>
-                        playerEl.anim({
-                            scaleX: [0.7, 1],
-                            scaleY: [1.1, 1],
-                            translateX: [100, 0],
-                            easing: "ease-in-out",
-                            duration: 300
-                        })
-                    );
+                    });
                 }
             });
             

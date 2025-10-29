@@ -38,11 +38,9 @@
 }
 
 #game-url {
-    position: fixed;
-    bottom: 32px;
-    left: 32px;
-    font-size: 2vw;
+    font-size: 23px;
     font-style: italic;
+    justify-self: flex-end;
 }
 
 #game-url span {

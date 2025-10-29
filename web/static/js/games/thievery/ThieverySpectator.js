@@ -140,7 +140,7 @@ class ThieverySpectator extends Spectator {
             ]));
             addPlayerColumn("Accuracy", info.accuratePlayers.map(player => [
                 player.username,
-                player.answeredQuestions == 0 ? "N/A" : Math.round(player.accuracy * 1000) / 10 + "%"
+                player.totalAnswered == 0 ? "N/A" : Math.round(player.accuracy * 1000) / 10 + "%"
             ]));
             
             endContainer
@@ -199,6 +199,7 @@ class ThieverySpectator extends Spectator {
             // TODO: fix the ball time ratio code issues
             const timeRatio = (fromRect.y - jumpTo) / (toRect.y - jumpTo);
             
+            this.playSound("spectator/penaltyflyby.mp3");
             penaltyShot.anim({
                 top: [fromRect.y, jumpTo],
                 brightness: [0.5, 1],
