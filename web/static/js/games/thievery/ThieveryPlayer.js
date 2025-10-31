@@ -11,6 +11,7 @@ class ThieveryPlayer extends Player {
     
     askQuestion(details) {
         const questionId = this._currentQuestionId = Date.now();
+        this.closeDamageSelect();
         
         const questionContainer =
             doc.el("#game")
