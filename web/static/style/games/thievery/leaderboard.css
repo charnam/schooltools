@@ -181,3 +181,10 @@
     position: fixed;
     transform: translate(-50%, -50%);
 }
+
+#pre-end {
+    background-image: url("./static.gif");
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
+}

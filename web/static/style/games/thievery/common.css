@@ -12,10 +12,6 @@ body {
 
 #pre-end {
     background-color: black;
-    background-image: url("./static.gif");
-    background-size: cover;
-    background-position: center;
-    image-rendering: pixelated;
 }
 
 #end {
