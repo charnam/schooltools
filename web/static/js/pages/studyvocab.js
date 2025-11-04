@@ -29,7 +29,7 @@ class StudyVocabGame extends StudyGame {
         
         const answers = [];
         
-        let correctAnswerPosition = randInt(0,4);
+        let correctAnswerPosition = randInt(0,3);
         for(let i = 0; i < 4; i++) {
             if(correctAnswerPosition == i)
                 answers.push(correctTerm[amode]);
