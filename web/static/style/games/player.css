@@ -43,4 +43,5 @@
     height: 100%;
     text-shadow: 0 3px 5px var(--text-shadow);
     font-size: 30px;
+    flex-direction: column;
 }

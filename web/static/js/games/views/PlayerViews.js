@@ -27,7 +27,8 @@ class PlayerViews extends DefaultViews {
     static pregame() {
         doc.el("#pregame")
             .crel("div").attr("id", "pregame-message")
-                .txt("You're in! Wait patiently for the game to start...");
+                .txt("You're in! Wait patiently for the game to start...")
+            .prnt()
     }
     
 }
