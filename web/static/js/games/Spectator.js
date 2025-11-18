@@ -91,14 +91,17 @@ class Spectator extends GameClient {
             
             doc.el("#joincode").html("").txt(code);
             
-            const shortenedURL = await fetch("https://is.gd/create.php?format=json&url=" + window.location.protocol + "//" + window.location.host + "/live/thievery/play/?joincode="+code).then(evt => evt.json());
-            if(shortenedURL.errorcode)
+            const shortenedURL =
+                await fetch("https://is.gd/create.php?format=json&url=" + window.location.protocol + "//" + window.location.host + "/live/thievery/play/?joincode="+code).then(evt => evt.json());
+            if(shortenedURL.errorcode) {
                 doc.el("#game-url").txt(window.location.host + "/live/thievery/play")
-            else
+            } else {
                 doc.el("#game-url")
                     .txt("Visit ")
                     .crel("span").txt(shortenedURL.shorturl.replace("https://", "")).prnt()
                     .txt(" to join");
+                doc.el("body").addc("shortened-url");
+            }
         });
         
         this.socket.on("players", players => {

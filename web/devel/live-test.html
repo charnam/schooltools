@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>post-game end test</title>
+    </head>
+    <body>
+        
+        <script type="module">
+            import ready from "/static/js/common/ready.js";
+            import ThieverySpectator from "/static/js/games/thievery/ThieverySpectator.js";
+            
+            ready.then(async () => {
+                const query = new URLSearchParams(window.location.search);
+                
+                const client = new ThieverySpectator({});
+                
+                client.showPreEndGame();
+                client.showEndGame({
+                    
+                })
+            });
+        </script>
+    </body>
+</html>

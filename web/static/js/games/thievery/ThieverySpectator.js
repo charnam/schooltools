@@ -85,6 +85,146 @@ class ThieverySpectator extends Spectator {
         
     }
     
+    // TODO: This should be merged with showEndGame in the future.
+    showPreEndGame() {
+        if(this.playingSounds.music) {
+            (async () => {
+                for(let i = 0; i < 10; i++) {
+                    this.playingSounds.music.volume-=0.1;
+                    await new Promise(res => setTimeout(res, 10));
+                }
+                
+                this.playingSounds.music.pause();
+            })();
+        }
+    }
+    
+    showEndGame(info) {
+        this.prepareView("end");
+        const endContainer = doc.el("#end");
+        
+        endContainer.html("");
+        
+        /*const addPlayerColumn = (title, players) => {
+            const col = endContainer.crel("div").addc("end-col")
+            
+            col.crel("div").addc("end-col-title")
+                .txt(title);
+            
+            for(let player of players) {
+                const playerEl = col.crel("div").addc("end-player")
+                
+                playerEl.crel("div").addc("end-player-name").txt(player[0]);
+                playerEl.crel("div").addc("end-player-info").txt(player[1])
+            }
+        }
+        
+        addPlayerColumn("Rank", info.finalRanks.map(player => [
+            player.username,
+            ordinalSuffix(player.rank)
+        ]));
+        addPlayerColumn("Accuracy", info.accuratePlayers.map(player => [
+            player.username,
+            player.totalAnswered == 0 ? "N/A" : Math.round(player.accuracy * 1000) / 10 + "%"
+        ]));
+        
+        endContainer
+            .crel("div").addc("end-col")
+                .crel("div").addc("end-col-title")
+                    .txt("(beta)")
+                .prnt()
+                .crel("div").addc("end-player")
+                    .txt("More information will be here in a later version.")
+                .prnt()
+                .crel("div").addc("end-player")
+                    .txt("Thanks for playing!")
+                .prnt()
+        */
+    
+        const totalAnswered = info.finalRanks.reduce((a,b) => a + b.totalAnswered, 0);
+        const totalIncorrect = info.finalRanks.reduce((a,b) => a + b.incorrectlyAnswered, 0);
+        
+        endContainer
+            .crel("div").addc("end-col").addc("end-show-cues")
+                .addc("place-3")
+                .crel("div").addc("end-player")
+                    .crel("div").addc("end-player-name")
+                    .prnt()
+                    .crel("div").addc("rank")
+                    .prnt()
+                .prnt()
+                .crel("div").addc("end-questions")
+                .prnt()
+            .prnt()
+            .crel("div").addc("end-col").addc("end-show-cues")
+                .addc("place-2")
+                .crel("div").addc("end-player")
+                    .crel("div").addc("end-player-name")
+                    .prnt()
+                    .crel("div").addc("rank")
+                    .prnt()
+                .prnt()
+                .crel("div").addc("end-questions")
+                .prnt()
+            .prnt()
+            .crel("div").addc("end-col").addc("end-show-cues")
+                .addc("place-1")
+                .crel("div").addc("end-player")
+                    .crel("div").addc("end-player-name")
+                    .prnt()
+                    .crel("div").addc("rank")
+                    .prnt()
+                .prnt()
+                .crel("div").addc("end-questions")
+                .prnt()
+            .prnt()
+            .crel("div").addc("end-answered-details").addc("end-show-cues")
+                .txt(
+                    totalAnswered +
+                    " answered in total, " + 
+                    totalIncorrect +
+                    " answers were incorrect, " +
+                    Math.round((1 - totalIncorrect / totalAnswered) * 10000) / 100 +
+                    "% accuracy")
+            .prnt()
+            .crel("div").addc("end-thanks-title").addc("end-show-cues")
+                .txt("Thanks for playing! :)")
+            .prnt()
+        
+        for(let i = 0; i < 3; i++) {
+            const player = info.finalRanks[i];
+            if(player) {
+                const col = endContainer.el(`.end-col:nth-child(${2-i+1})`);
+                col.el(".end-player-name")
+                    .txt(player.username);
+                col.el(".rank")
+                    .txt(ordinalSuffix(player.rank));
+                col.el(".end-questions")
+                    .txt(player.answeredQuestions);
+            }
+        }
+        
+        for(let cue of endContainer.els(".end-show-cues")) {
+            cue.style.opacity = "0"
+        }
+        
+        setTimeout(() => {
+            this.playSound("spectator/scores-v4.mp3", "scoresJingle");
+            const timeBetweenEndColumns = 500;
+            
+            setTimeout(() => {
+                endContainer.els(".end-show-cues").anim({
+                    translateY: [100, 0],
+                    opacity: [0, 1],
+                    duration: 100,
+                    delayBetween:
+                    timeBetweenEndColumns,
+                    easing: "ease-out"
+                });
+            }, timeBetweenEndColumns);
+        }, 1000)
+    }
+    
     constructor(args) {
         super("/games/thievery", args);
         
@@ -98,65 +238,14 @@ class ThieverySpectator extends Spectator {
         
         this.socket.on("gamestate", state => {
             if(state == "pre-end") {
-                if(this.playingSounds.music) {
-                    (async () => {
-                        for(let i = 0; i < 10; i++) {
-                            this.playingSounds.music.volume-=0.1;
-                            await new Promise(res => setTimeout(res, 10));
-                        }
-                        
-                        this.playingSounds.music.pause();
-                    })();
-                }
-                
-                this.playSound("spectator/scores-v2.mp3", "scoresJingle");
+                this.showPreEndGame();
             }
-            
         });
         
         this.socket.on("end-game", info => {
-            this.prepareView("end");
-            const endContainer = doc.el("#end");
-            
-            endContainer.html("");
-            
-            const addPlayerColumn = (title, players) => {
-                const col = endContainer.crel("div").addc("end-col")
-                
-                col.crel("div").addc("end-col-title")
-                    .txt(title);
-                
-                for(let player of players) {
-                    const playerEl = col.crel("div").addc("end-player")
-                    
-                    playerEl.crel("div").addc("end-player-name").txt(player[0]);
-                    playerEl.crel("div").addc("end-player-info").txt(player[1])
-                }
-            }
-            
-            addPlayerColumn("Rank", info.finalRanks.map(player => [
-                player.username,
-                ordinalSuffix(player.rank)
-            ]));
-            addPlayerColumn("Accuracy", info.accuratePlayers.map(player => [
-                player.username,
-                player.totalAnswered == 0 ? "N/A" : Math.round(player.accuracy * 1000) / 10 + "%"
-            ]));
-            
-            endContainer
-                .crel("div").addc("end-col")
-                    .crel("div").addc("end-col-title")
-                        .txt("(beta)")
-                    .prnt()
-                    .crel("div").addc("end-player")
-                        .txt("More information will be here in a later version.")
-                    .prnt()
-                    .crel("div").addc("end-player")
-                        .txt("Thanks for playing!")
-                    .prnt()
-            
-            endContainer.els(".end-col").anim({translateY: [-10, 0], opacity: [0, 1], duration: 500, delayBetween: 1000, easing: "ease-out"})
-        })
+            this.showEndGame(info);
+            console.log(info);
+        });
         
         this.socket.on("player-attacks-player", info => {
             const fromBar = document.getElementsByName(info.from)[0];

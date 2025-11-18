@@ -4,16 +4,3 @@
 body {
     font-family: "Zalando Sans", arial;
 }
-
-#pre-end, #end {
-    transition: none !important;
-    animation: none !important;
-}
-
-#pre-end {
-    background-color: black;
-}
-
-#end {
-    background: black;
-}

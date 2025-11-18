@@ -10,9 +10,12 @@ class ThieveryPlayer extends Player {
     
     penaltyQuestions = 0;
     answeredQuestions = 0;
+    incorrectlyAnswered = 0;
     totalAnswered = 0; // Total questions answered, disregarding any penalties
     streak = 0;
     answeredResults = []; // Array used to generate accuracy
+    
+    queuedTerms = []; // Used to offer better randomness when asking questions
     
     get rank() {
         return this.game.rankedPlayers.indexOf(this) + 1;
@@ -48,6 +51,7 @@ class ThieveryPlayer extends Player {
             penaltyQuestions: this.penaltyQuestions,
             answeredQuestions: this.answeredQuestions,
             totalAnswered: this.totalAnswered,
+            incorrectlyAnswered: this.incorrectlyAnswered,
             canSendDamage: this.canSendDamage,
             goalCondition: this.goalCondition,
             streak: this.streak,
@@ -81,6 +85,7 @@ class ThieveryPlayer extends Player {
     
     addPenaltyQuestions(count) {
         this.penaltyQuestions += count;
+        this.penaltyQuestions = Math.min(this.penaltyQuestions, 5);
         this.socket.emit("add-penalty-questions", count);
         this.socket.emit("penalty-questions", this.penaltyQuestions);
         this.game.emit("update");
@@ -95,6 +100,19 @@ class ThieveryPlayer extends Player {
             },
             amount
         });
+    }
+    
+    regenerateTermQueue() {
+        let queuedTerms = [...this.game.set.terms];
+        
+        // Shuffle array of terms
+        queuedTerms = queuedTerms
+            .map(term => ({value: term, sort: Math.random()}))
+            .sort((a,b) => a.sort - b.sort)
+            .map(term => term.value);
+        
+        this.queuedTerms = queuedTerms;    
+        return this.queuedTerms;
     }
 
     askSpecificQuestion(details) {
@@ -143,6 +161,7 @@ class ThieveryPlayer extends Player {
             } else {
                 this.socket.emit("answer-result", false);
                 this.answeredResults.push(false);
+                this.incorrectlyAnswered++;
                 
                 this.streak = 0;
                 this.addPenaltyQuestions(3);
@@ -151,8 +170,11 @@ class ThieveryPlayer extends Player {
         });
     }
     askQuestion() {
-        const set = this.game.set;
-        const currentTerm = randArr(this.game.set.terms);
+        if(this.queuedTerms.length == 0) {
+            this.regenerateTermQueue();
+        }
+        
+        const currentTerm = this.queuedTerms.shift();
         
         let answerWith = this.game.gameArgs.answerWith;
         if(answerWith == "both")
@@ -166,20 +188,24 @@ class ThieveryPlayer extends Player {
             answers: [],
         };
         
-        const usedTerms = [currentTerm];
         const correctAnswer = randInt(0,3)
         for(let q = 0; q < 4; q++) {
             if(correctAnswer !== q) {
-                let newTerm = null;
+                let newTermText = null;
                 
                 // make sure we aren't getting two correct / same answers
-                while(newTerm == null || usedTerms.includes(newTerm)) {
-                    newTerm = randArr(this.game.set.terms)
+                while(
+                    newTermText == null ||
+                    question.answers.some(answer => answer.text == newTermText)
+                ) {
+                    if(this.queuedTerms.length < 4)
+                        this.regenerateTermQueue();
+                    
+                    newTermText = randArr(this.queuedTerms)[answerWith];
                 }
                 
-                usedTerms.push(newTerm);
                 question.answers.push({
-                    text: newTerm[answerWith]
+                    text: newTermText
                 });
             } else {
                 question.answers.push({

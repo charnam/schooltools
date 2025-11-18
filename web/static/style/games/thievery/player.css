@@ -241,8 +241,27 @@ body:has(#game.visible .penalty-bar) #wallpaper {
     }
 }
 
+@keyframes fadeInPreEnd {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#pre-end {
+    transition: none !important;
+    animation: fadeInPreEnd 0.5s ease-in-out !important;
+    background-color: black;
+}
+#end {
+    background: black;
+    animation: none !important;
+    transition: none !important;
+}
 #end:before {
-    content: "Game over - Check the leaderboard to see how you did!";
+    content: "Thank you for playing!";
     animation: fadeInGameOver 5s ease-in-out;
     opacity: 0.3;
     font-size: 5vmin;

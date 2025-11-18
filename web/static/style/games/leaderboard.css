@@ -15,32 +15,41 @@
 }
 
 #pregame-sidebar {
-    width: 300px;
+    width: 24vw;
     flex: none;
-    padding: 20px;
+    padding: 1vmin;
     box-sizing: border-box;
 }
 
 #joincode {
     text-align: left;
-    font-size: 40px;
-    letter-spacing: 5px;
+    font-size: 5vmin;
+    letter-spacing: 1vmin;
     user-select: text;
 }
 
 #joincode:before {
     content: 'Join Code';
     display: block;
-    font-size: 20px;
+    font-size: 2vmin;
     letter-spacing: 0;
     color: #0005;
-    height: 20px;
+    height: 2vmin;
 }
 
 #game-url {
-    font-size: 23px;
+    font-size: min(3vmin, 1.5vw);
     font-style: italic;
     justify-self: flex-end;
+}
+body.shortened-url #game-url {
+    font-size: 4vmin;
+    font-style: italic;
+    justify-self: flex-end;
+}
+
+body.shortened-url #pregame-sidebar {
+    display: none;
 }
 
 #game-url span {
@@ -58,32 +67,48 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    font-size: 20px;
+    padding: 2vmin;
+    font-size: 3vmin;
 }
 
+body:not(:has(.player:nth-child(2))) #startgame {
+    opacity: 0.5;
+    pointer-events: none;
+    filter: grayscale(1);
+}
 #startgame {
-    background: linear-gradient(to bottom, white, #ccc);
-    border: 1px solid gray;
-    border-radius: 5px;
+    background: linear-gradient(to bottom, #1cc800, #009439);
+    border: 0.3vmin solid #00000063;
+    border-radius: 1vmin;
     font-size: inherit;
-    padding: 5px 20px;
-    box-shadow: 0 5px 5px #0005;
-    text-shadow: 0 1px #fff;
+    padding: 0.9vmin 3vmin;
+    box-shadow: 0 1vmin 1vmin #0005;
     cursor: pointer;
+    color: white;
+    transition: 0.05s ease-in-out;
+    transition-property: transform, box-shadow, filter;
+}
+#startgame:active {
+    transform: translateY(1vmin) scale(0.9);
+    box-shadow: none;
+    filter: brightness(0.9);
+}
+
+#pregame-players-list {
+    padding: 2vmin;
 }
 
 .player {
     background: linear-gradient(to bottom, #000a, #000);
-    font-size: 25px;
-    padding: 5px 20px;
+    font-size: 5vmin;
+    padding: 1vmin 2vmin;
     display: inline-block;
     text-align: center;
-    border-radius: 5px;
-    margin: 5px;
-    border: 1px solid #0004;
+    border-radius: 1.5vmin;
+    margin: 1vmin;
+    border: 0.4vmin solid #0004;
     color: white;
-    box-shadow: 0 5px 10px #000a;
+    box-shadow: 0 1vmin 2vmin #000a;
 }
 
 .moderator .player:hover {

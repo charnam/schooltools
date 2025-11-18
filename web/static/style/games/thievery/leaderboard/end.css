@@ -4,8 +4,9 @@ div#end {
     grid-template-columns: var(--column-size) var(--column-size) var(--column-size);
     font-size: 4vmin;
     justify-content: space-evenly;
-    background: linear-gradient(to bottom, #222, #000);
-    overflow-y: auto;
+    /*background: linear-gradient(to bottom, #222, #000);*/
+    background: transparent;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 
@@ -38,6 +39,55 @@ div#end {
     margin-top: 2vmin;
 }
 
-.end-col:nth-child(3) {
+.end-col {
+    background: linear-gradient(to bottom, #39ab5f, #25703e);
+    border-radius: 5vmin 5vmin 0 0;
+    margin: 0 1vmin 0 1vmin;
+    box-shadow: 1vmin 1vmin 2vmin #0005;
+}
+.end-questions {
+    color: white;
     text-align: center;
+    font-size: 8vmin;
+    font-style: italic;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+}
+
+.end-questions:not(:empty):after {
+    font-size: 2vmin;
+    content: "QUESTIONS ANSWERED";
+}
+
+.place-1 {
+    order: 1;
+    margin-top: 40vmin;
+}
+.place-2 {
+    order: 0;
+    margin-top: 50vmin;
+}
+.place-3 {
+    order: 2;
+    margin-top: 60vmin;
+}
+
+.end-answered-details {
+    position: fixed;
+    left: 0;
+    top: 0;
+    font-size: 3vmin;
+    text-align: center;
+    width: 100vw;
+    margin-top: 4vmin;
+}
+
+.end-thanks-title {
+    position: fixed;
+    bottom: 80vh;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100vw;
+    font-size: 6vmin;
 }

@@ -24,9 +24,7 @@ class ThieveryGame extends Game {
     get endGameInfo() {
         const players = this.rankedPlayers.map(player => player.info);
         return {
-            finalRanks: players,
-            accuratePlayers: players.toSorted((playerA, playerB) => playerB.accuracy - playerA.accuracy),
-            averageAccuracy: players.reduce((prev, cur) => prev + cur, 0) / this.rankedPlayers.length
+            finalRanks: players
         };
     }
     
