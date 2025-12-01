@@ -189,6 +189,7 @@ class ThieveryPlayer extends Player {
         };
         
         const correctAnswer = randInt(0,3)
+        const correctAnswerText = currentTerm[answerWith];
         for(let q = 0; q < 4; q++) {
             if(correctAnswer !== q) {
                 let newTermText = null;
@@ -196,7 +197,8 @@ class ThieveryPlayer extends Player {
                 // make sure we aren't getting two correct / same answers
                 while(
                     newTermText == null ||
-                    question.answers.some(answer => answer.text == newTermText)
+                    question.answers.some(answer => answer.text == newTermText) ||
+                    newTermText == correctAnswerText
                 ) {
                     if(this.queuedTerms.length < 4)
                         this.regenerateTermQueue();
@@ -209,7 +211,7 @@ class ThieveryPlayer extends Player {
                 });
             } else {
                 question.answers.push({
-                    text: currentTerm[answerWith],
+                    text: correctAnswerText,
                     isCorrect: true
                 });
             }

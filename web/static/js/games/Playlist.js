@@ -12,18 +12,18 @@ export default [
         playsFirst: true
     },
     {
-        filename: "music/virt.mp3",
-        title: "Virtual",
-        creator: "SchoolTools"
-    },
-    {
         filename: "music/undf.mp3",
         title: "Undefined",
         creator: "SchoolTools"
     },
     {
-        filename: "music/zero.mp3",
+        filename: "music/nzer.mp3",
         title: "Nonzero",
+        creator: "SchoolTools"
+    },
+    {
+        filename: "music/lead.mp3",
+        title: "Leaderboard",
         creator: "SchoolTools"
     }
 ];

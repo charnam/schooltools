@@ -5,6 +5,7 @@ import { randArr } from "/static/js/common/random.js";
 class Spectator extends GameClient {
     
     playlist = Playlist;
+    lastPlayedSong = null;
     
     async playMusic(filename, title, creator) {
         
@@ -61,9 +62,9 @@ class Spectator extends GameClient {
         
         let availableMusic = this.playlist;
         
-        availableMusic = availableMusic.filter(song => !song.playsFirst == !options.first);
+        availableMusic = availableMusic.filter((song) => !song.playsFirst == !options.first && song !== this.lastPlayedSong);
         
-        const song = randArr(availableMusic);
+        const song = this.lastPlayedSong = randArr(availableMusic);
         
         await this.playMusic(song.filename, song.title, song.creator);
         

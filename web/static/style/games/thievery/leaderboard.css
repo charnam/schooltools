@@ -143,22 +143,21 @@
 
 .bar-chart .bar:after {
     content: attr(value);
-    color: white;
     width: 100%;
     text-align: center;
     display: inline-block;
     --vertical-room: calc(var(--value) - var(--penaltyQuestions));
-    font-size: max(
-        0vmin,
-        min(
-            calc(
-                var(--vertical-room) * var(--one-vertical-grid-space) - (var(--vertical-text-margin) * 2)
-            ),
-            var(--max-font-size)
-        )
-    );
+    font-size: var(--max-font-size);
     transition: font-size 0.5s ease-out;
     font-style: italic;
+    position: absolute;
+    left: 0;
+    transform: translateY(-100%);
+    padding-bottom: 1vmin;
+    top: 0;
+    color: white;
+    text-shadow: 0 0.5vmin 1vmin var(--text-shadow);
+    font-weight: bold;
 }
 
 .bar-chart .bar:before {
