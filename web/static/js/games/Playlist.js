@@ -25,5 +25,10 @@ export default [
         filename: "music/lead.mp3",
         title: "Leaderboard",
         creator: "SchoolTools"
+    },
+    {
+        filename: "music/door.mp3",
+        title: "Numbers",
+        creator: "SchoolTools"
     }
 ];
